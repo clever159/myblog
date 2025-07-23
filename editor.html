@@ -1,112 +1,910 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <title>编辑文章</title>
-  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
-  <style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>编辑文章</title>
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+<script src="lang.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600&display=swap');
+
+:root {
+    --primary-cyan: #00d4ff;
+    --primary-magenta: #ff0080;
+    --accent-purple: #8b5cf6;
+    --bg-dark: #0a0a0f;
+    --bg-card: rgba(15, 15, 25, 0.8);
+    --text-primary: #ffffff;
+    --text-secondary: #a1a1aa;
+    --border-glow: rgba(0, 212, 255, 0.3);
+    --shadow-glow: 0 0 20px rgba(0, 212, 255, 0.1);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, var(--bg-dark) 0%, #0f0f1a 50%, #1a0f2e 100%);
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+    padding: 2rem;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 20% 80%, rgba(0, 212, 255, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 0, 128, 0.05) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+#editorContainer {
+    max-width: 900px;
+    margin: 0 auto;
+    background: var(--bg-card);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 2rem;
+    backdrop-filter: blur(20px);
+    box-shadow: var(--shadow-glow);
+}
+
+/* Navigation */
+.nav-container {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    padding: 1rem;
+}
+
+.nav-link {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+    color: var(--primary-cyan);
+    background: rgba(0, 212, 255, 0.1);
+}
+
+/* Header */
+.editor-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.editor-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, var(--primary-cyan), var(--primary-magenta));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.editor-subtitle {
+    color: var(--text-secondary);
+    font-family: 'JetBrains Mono', monospace;
+}
+
+/* Title Input */
+#title {
+    width: 100%;
+    font-size: 1.5rem;
+    padding: 1rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--bg-card);
+    color: var(--text-primary);
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+#title:focus {
+    outline: none;
+    border-color: var(--primary-cyan);
+    box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.2);
+}
+
+#title::placeholder {
+    color: var(--text-secondary);
+}
+
+/* Editor Container */
+#editor {
+    height: 400px;
+    background: var(--bg-card);
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+}
+
+/* Quill Editor Overrides */
+.ql-toolbar {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: none !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 12px 12px 0 0 !important;
+    padding: 1rem !important;
+}
+
+.ql-container {
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 0 12px 12px !important;
+    color: var(--text-primary) !important;
+    font-family: 'Inter', sans-serif !important;
+}
+
+.ql-editor {
+    color: var(--text-primary) !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 1rem !important;
+    line-height: 1.6 !important;
+    padding: 1.5rem !important;
+}
+
+.ql-toolbar .ql-stroke {
+    stroke: var(--text-secondary) !important;
+}
+
+.ql-toolbar .ql-fill {
+    fill: var(--text-secondary) !important;
+}
+
+.ql-toolbar button:hover .ql-stroke {
+    stroke: var(--primary-cyan) !important;
+}
+
+.ql-toolbar button:hover .ql-fill {
+    fill: var(--primary-cyan) !important;
+}
+
+.ql-toolbar button:hover {
+    background: rgba(0, 212, 255, 0.1) !important;
+    border-radius: 4px !important;
+}
+
+.ql-editor.ql-blank::before {
+    color: var(--text-secondary) !important;
+    font-style: normal !important;
+}
+
+/* Article Info */
+#articleInfo {
+    margin: 1.5rem 0;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.info-value {
+    color: var(--primary-cyan);
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 500;
+}
+
+.shortcuts-info {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    text-align: center;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    font-family: 'JetBrains Mono', monospace;
+}
+
+/* Tags Section */
+.tags-section {
+    margin: 1.5rem 0;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tags-title {
+    color: var(--primary-magenta);
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.tag-input-container {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+#tagInput {
+    flex: 1;
+    padding: 0.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    background: var(--bg-card);
+    color: var(--text-primary);
+    font-family: 'Inter', sans-serif;
+}
+
+#tagInput:focus {
+    outline: none;
+    border-color: var(--primary-cyan);
+}
+
+.tag-btn {
+    background: rgba(0, 212, 255, 0.1);
+    color: var(--primary-cyan);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.3s ease;
+}
+
+.tag-btn:hover {
+    background: rgba(0, 212, 255, 0.2);
+    border-color: var(--primary-cyan);
+}
+
+.current-tags, .suggested-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.tag {
+    background: rgba(0, 212, 255, 0.1);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    color: var(--primary-cyan);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'JetBrains Mono', monospace;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.tag:hover {
+    background: rgba(0, 212, 255, 0.2);
+    border-color: var(--primary-cyan);
+}
+
+.tag-remove {
+    background: none;
+    border: none;
+    color: var(--primary-magenta);
+    cursor: pointer;
+    font-size: 0.8rem;
+    padding: 0;
+    margin-left: 0.3rem;
+}
+
+/* Buttons */
+.btns {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+button {
+    background: rgba(0, 212, 255, 0.1);
+    color: var(--primary-cyan);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+button:hover {
+    background: rgba(0, 212, 255, 0.2);
+    border-color: var(--primary-cyan);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 212, 255, 0.2);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+.primary-btn {
+    background: linear-gradient(135deg, var(--primary-cyan), var(--primary-magenta)) !important;
+    color: white !important;
+    border: none !important;
+}
+
+.primary-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 212, 255, 0.4);
+}
+
+/* Warning */
+#titleWarning {
+    display: none;
+    background: rgba(255, 0, 128, 0.1);
+    border: 1px solid rgba(255, 0, 128, 0.3);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-top: 0.5rem;
+    color: var(--primary-magenta);
+    font-size: 0.9rem;
+}
+
+/* Floating Text Animation */
+.floating-text {
+    position: fixed;
+    font-size: 1.2rem;
+    font-weight: 600;
+    pointer-events: none;
+    user-select: none;
+    white-space: nowrap;
+    animation: float-up 1.5s forwards;
+    z-index: 10000;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+@keyframes float-up {
+    0% {
+        opacity: 1;
+        transform: translate3d(0, 0, 0) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translate3d(0, -60px, 0) scale(1.2);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
     body {
-      background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
-      color: white;
-      font-family: sans-serif;
-      padding: 20px;
+        padding: 1rem;
     }
-
-    h1, input {
-      text-align: center;
-      width: 100%;
-    }
-
+    
     #editorContainer {
-      max-width: 800px;
-      margin: auto;
-      background: rgba(255,255,255,0.1);
-      padding: 20px;
-      border-radius: 12px;
-      backdrop-filter: blur(10px);
+        padding: 1.5rem;
     }
-
-    #title {
-      width: 100%;
-      font-size: 1.5rem;
-      padding: 10px;
-      border-radius: 10px;
-      margin-bottom: 15px;
-      border: none;
+    
+    .editor-title {
+        font-size: 2rem;
     }
-
-    #editor {
-      height: 300px;
-      background: white;
-      color: black;
-      border-radius: 10px;
-      padding: 10px;
-    }
-
+    
     .btns {
-      margin-top: 20px;
-      text-align: center;
+        flex-direction: column;
     }
-
-    button {
-      background: #4ECDC4;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      font-size: 1rem;
-      border-radius: 25px;
-      margin: 0 10px;
-      cursor: pointer;
+    
+    .info-grid {
+        grid-template-columns: 1fr;
     }
-  </style>
+    
+    .tag-input-container {
+        flex-direction: column;
+    }
+}
+</style>
 </head>
 <body>
-  <div id="editorContainer">
-    <h1>编辑文章</h1>
-    <input type="text" id="title" placeholder="请输入文章标题">
-    <div id="editor"></div>
-    <div class="btns">
-      <button onclick="save()">保存</button>
-      <button onclick="goBack()">返回列表</button>
+<div id="editorContainer">
+    <div class="nav-container">
+        <a href="index.html" class="nav-link" data-lang="home">🏠 首页</a>
+        <a href="settings.html" class="nav-link" data-lang="settings">⚙️ 设置</a>
     </div>
-  </div>
 
-  <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
-  <script>
-    const urlParams = new URLSearchParams(window.location.search);
-    const index = urlParams.has('index') ? parseInt(urlParams.get('index')) : null;
+    <div class="editor-header">
+        <h1 class="editor-title" data-lang="editorTitle">Cyber Editor</h1>
+        <p class="editor-subtitle">// Create • Edit • Publish</p>
+    </div>
 
-    const quill = new Quill('#editor', { theme: 'snow' });
+        <input type="text" id="title" data-lang="titlePlaceholder" placeholder="输入文章标题..." title="输入文章标题，不能为空">
+
+    <!-- 文章信息显示 -->
+    <div id="articleInfo">
+        <div class="info-grid">
+            <div class="info-item">
+                <span data-lang="wordCount">字数</span>
+                <span class="info-value" id="wordCount">0</span>
+            </div>
+            <div class="info-item">
+                <span data-lang="charCount">字符数</span>
+                <span class="info-value" id="charCount">0</span>
+            </div>
+            <div class="info-item">
+                <span data-lang="lastSaved">最后保存</span>
+                <span class="info-value" id="lastSaved" data-lang="never">从未</span>
+            </div>
+            <div class="info-item">
+                <button onclick="setWordTarget()" class="tag-btn" data-lang="setTarget" title="设置写作字数目标">🎯 设置目标</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 标签管理 -->
+    <div class="tags-section">
+        <div class="tags-title">🏷️ 标签管理</div>
+        <div class="tag-input-container">
+            <input type="text" id="tagInput" placeholder="添加标签..." maxlength="20" title="输入标签名称，最多20个字符">
+            <button onclick="addTagFromInput()" class="tag-btn" title="添加新标签">添加</button>
+        </div>
+    </div>
+
+    <div class="btns">
+        <button onclick="save()" class="primary-btn" data-lang="save" title="保存文章并发布">💾 保存</button>
+        <button onclick="saveAsDraft()" data-lang="saveAsDraft" title="保存为草稿，不发布">📝 保存为草稿</button>
+        <button onclick="previewArticle()" data-lang="preview" title="在新窗口预览文章效果">👁️ 预览</button>
+        <button onclick="goBack()" data-lang="backToList" title="返回文章列表">🔙 返回列表</button>
+    </div>
+
+<script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+<script>
+// 浮现文字数组 - 简化版
+const texts = [
+    "✨", "💫", "⚡", "🔥", "💎", "🌟",
+    "WRITE", "CREATE", "EDIT", "SAVE", "CODE", "CYBER"
+];
+
+const colors = [
+    "#00d4ff", "#ff0080", "#8b5cf6", "#00ff88", "#ff4081", "#40e0d0"
+];
+
+// 创建浮现文字函数
+function createFloatingText(x, y) {
+    const textElement = document.createElement('div');
+    const randomText = texts[Math.floor(Math.random() * texts.length)];
+    const randomColor = colors[Math.floor(Math.random() * colors.length)];
+    textElement.textContent = randomText;
+    textElement.className = 'floating-text';
+    textElement.style.left = x + 'px';
+    textElement.style.top = y + 'px';
+    textElement.style.color = randomColor;
+    
+    document.body.appendChild(textElement);
+    
+    setTimeout(() => {
+        if (textElement && textElement.parentNode) {
+            textElement.remove();
+        }
+    }, 1500);
+}
+
+// 事件监听
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('button, a, input, select, textarea, .ql-toolbar, .ql-editor')) {
+        createFloatingText(e.clientX, e.clientY);
+    }
+});
+
+let articleTags = [];
+let isEditing = false;
+
+const urlParams = new URLSearchParams(window.location.search);
+const index = urlParams.has('index') ? parseInt(urlParams.get('index')) : null;
+
+const quill = new Quill('#editor', { 
+    theme: 'snow',
+    modules: {
+        toolbar: [
+            [{ 'header': [1, 2, 3, false] }],
+            ['bold', 'italic', 'underline', 'strike'],
+            [{ 'color': [] }, { 'background': [] }],
+            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+            ['blockquote', 'code-block'],
+            ['link', 'image'],
+            [{ 'align': [] }],
+            ['clean']
+        ]
+    }
+});
+
+// 添加快捷键支持
+document.addEventListener('keydown', function(e) {
+    if (e.ctrlKey || e.metaKey) {
+        switch(e.key) {
+            case 's':
+                e.preventDefault();
+                save();
+                break;
+            case 'd':
+                e.preventDefault();
+                saveAsDraft();
+                break;
+            case 'p':
+                e.preventDefault();
+                previewArticle();
+                break;
+        }
+    }
+});
+
+// 字数目标功能
+function setWordTarget() {
+    const target = prompt('设置字数目标:', '500');
+    if (target && !isNaN(target)) {
+        localStorage.setItem('word-target', target);
+        updateWordCount();
+    }
+}
+
+// 更新字数统计显示
+function updateWordCount() {
+    const content = quill.getText();
+    const wordCount = content.trim().split(/\s+/).filter(word => word.length > 0).length;
+    const charCount = content.length;
+    const target = localStorage.getItem('word-target');
+    
+    document.getElementById('wordCount').textContent = wordCount;
+    document.getElementById('charCount').textContent = charCount;
+    
+    if (target) {
+        const progress = Math.round((wordCount / target) * 100);
+        const progressColor = progress >= 100 ? '#00ff88' : progress >= 75 ? '#ffff00' : '#ff0080';
+        document.getElementById('wordCount').innerHTML = `${wordCount}/${target} (${progress}%)`;
+        document.getElementById('wordCount').style.color = progressColor;
+    }
+}
+
+// 加载文章数据
+if (index !== null) {
+    const articles = JSON.parse(localStorage.getItem('blog-articles') || '[]');
+    if (articles[index]) {
+        const article = articles[index];
+        document.getElementById('title').value = article.title;
+        quill.root.innerHTML = article.content;
+        articleTags = article.tags || [];
+        isEditing = true;
+        updateTagDisplay();
+        updateWordCount();
+        if (article.lastModified) {
+            document.getElementById('lastSaved').textContent = new Date(article.lastModified).toLocaleString();
+        }
+    }
+}
+
+// 实时更新字数统计
+quill.on('text-change', updateWordCount);
+document.getElementById('title').addEventListener('input', updateWordCount);
+
+// 标签功能
+function addTag(tagText) {
+    const tag = tagText.trim().toLowerCase();
+    if (tag && !articleTags.includes(tag)) {
+        articleTags.push(tag);
+        updateTagDisplay();
+        updateSuggestedTags();
+    }
+}
+
+function removeTag(tag) {
+    articleTags = articleTags.filter(t => t !== tag);
+    updateTagDisplay();
+    updateSuggestedTags();
+}
+
+function addTagFromInput() {
+    const input = document.getElementById('tagInput');
+    const tag = input.value.trim();
+    if (tag) {
+        addTag(tag);
+        input.value = '';
+    }
+}
+
+function updateTagDisplay() {
+    const currentTagsDiv = document.getElementById('currentTags');
+    currentTagsDiv.innerHTML = articleTags.map(tag => 
+        `<span class="tag" title="当前标签">#${tag} <button class="tag-remove" onclick="removeTag('${tag}')" title="移除此标签">×</button></span>`
+    ).join('');
+}
+
+function updateSuggestedTags() {
+    const articles = JSON.parse(localStorage.getItem('blog-articles') || '[]');
+    const allTags = [...new Set(articles.flatMap(article => article.tags || []))];
+    const suggestedTags = allTags.filter(tag => !articleTags.includes(tag)).slice(0, 8);
+    
+    const suggestedTagsDiv = document.getElementById('suggestedTags');
+    suggestedTagsDiv.innerHTML = suggestedTags.map(tag => 
+        `<span class="tag" onclick="addTag('${tag}')" title="点击添加此标签">#${tag}</span>`
+    ).join('');
+}
+
+// 标题重复检测
+function checkDuplicateTitle(title, currentIndex) {
+    const articles = JSON.parse(localStorage.getItem('blog-articles') || '[]');
+    return articles.findIndex((article, idx) => 
+        article.title.toLowerCase() === title.toLowerCase() && idx !== currentIndex
+    );
+}
+
+function createTitleWarning() {
+    const warningDiv = document.createElement('div');
+    warningDiv.id = 'titleWarning';
+    document.getElementById('title').parentNode.insertBefore(warningDiv, document.getElementById('title').nextSibling);
+    return warningDiv;
+}
+
+// 保存功能
+function save() {
+    const title = document.getElementById('title').value.trim();
+    const content = quill.root.innerHTML;
+    if (!title) return alert('❌ 标题不能为空！');
+
+    const articles = JSON.parse(localStorage.getItem('blog-articles') || '[]');
+    const now = new Date().toISOString();
+    
+    const duplicateIndex = checkDuplicateTitle(title, index);
+    
+    if (duplicateIndex !== null) {
+        const duplicateArticle = articles[duplicateIndex];
+        const confirmMessage = `⚠️ 标题已存在！创建时间: ${new Date(duplicateArticle.createTime).toLocaleString()}\n\n要覆盖它吗？`;
+        
+        if (!confirm(confirmMessage)) {
+            return;
+        }
+        
+        const newData = { 
+            title, 
+            content, 
+            tags: articleTags,
+            createTime: duplicateArticle.createTime,
+            lastModified: now,
+            isDraft: false
+        };
+        
+        articles[duplicateIndex] = newData;
+        
+        if (index !== null && index !== duplicateIndex) {
+            articles.splice(index > duplicateIndex ? index : index, 1);
+        }
+        
+        localStorage.setItem('blog-articles', JSON.stringify(articles));
+        document.getElementById('lastSaved').textContent = new Date().toLocaleString();
+        alert('✅ 文章覆盖成功！');
+        
+        setTimeout(() => {
+            window.location.href = `editor.html?index=${duplicateIndex}`;
+        }, 1000);
+        
+        return;
+    }
+
+    const newData = { 
+        title, 
+        content, 
+        tags: articleTags,
+        createTime: index !== null ? (articles[index]?.createTime || now) : now,
+        lastModified: now,
+        isDraft: false
+    };
 
     if (index !== null) {
-      const articles = JSON.parse(localStorage.getItem('blog-articles') || '[]');
-      if (articles[index]) {
-        document.getElementById('title').value = articles[index].title;
-        quill.root.innerHTML = articles[index].content;
-      }
-    }
-
-    function save() {
-      const title = document.getElementById('title').value.trim();
-      const content = quill.root.innerHTML;
-      if (!title) return alert("标题不能为空");
-
-      const articles = JSON.parse(localStorage.getItem('blog-articles') || '[]');
-
-      const newData = { title, content };
-      if (index !== null) {
         articles[index] = newData;
-      } else {
+    } else {
         articles.push(newData);
-      }
-
-      localStorage.setItem('blog-articles', JSON.stringify(articles));
-      alert("保存成功！");
     }
 
-    function goBack() {
-      window.location.href = "index.html";
+    localStorage.setItem('blog-articles', JSON.stringify(articles));
+    document.getElementById('lastSaved').textContent = new Date().toLocaleString();
+    alert('✅ 文章保存成功！');
+}
+
+function saveAsDraft() {
+    const title = document.getElementById('title').value.trim() || 'Untitled Draft';
+    const content = quill.root.innerHTML;
+
+    const articles = JSON.parse(localStorage.getItem('blog-articles') || '[]');
+    const now = new Date().toISOString();
+    
+    let draftTitle = title.startsWith('[DRAFT]') ? title : `[DRAFT] ${title}`;
+    
+    const duplicateIndex = checkDuplicateTitle(draftTitle, index);
+    
+    if (duplicateIndex !== null && index !== duplicateIndex) {
+        const timestamp = new Date().toLocaleTimeString().replace(/:/g, '-');
+        draftTitle = `${draftTitle} (${timestamp})`;
     }
-  </script>
+
+    const newData = { 
+        title: draftTitle, 
+        content, 
+        tags: articleTags,
+        createTime: index !== null ? (articles[index]?.createTime || now) : now,
+        lastModified: now,
+        isDraft: true
+    };
+
+    if (index !== null) {
+        articles[index] = newData;
+    } else {
+        articles.push(newData);
+    }
+
+    localStorage.setItem('blog-articles', JSON.stringify(articles));
+    document.getElementById('lastSaved').textContent = new Date().toLocaleString();
+    alert('📝 草稿保存成功！');
+}
+
+function previewArticle() {
+    const title = document.getElementById('title').value.trim() || 'Untitled';
+    const content = quill.root.innerHTML;
+
+    const previewWindow = window.open('', '_blank');
+    previewWindow.document.write(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+    <title>Preview: ${title}</title>
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600&display=swap');
+    body { 
+        font-family: 'Inter', sans-serif; 
+        background: linear-gradient(135deg, #0a0a0f 0%, #0f0f1a 50%, #1a0f2e 100%); 
+        color: #ffffff; 
+        padding: 2rem; 
+        line-height: 1.6; 
+        margin: 0;
+        min-height: 100vh;
+    }
+    h1 { 
+        background: linear-gradient(135deg, #00d4ff, #ff0080);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        text-align: center; 
+        font-size: 2.5rem; 
+        margin-bottom: 2rem; 
+    }
+    .content { 
+        max-width: 800px; 
+        margin: auto; 
+        background: rgba(15, 15, 25, 0.8); 
+        padding: 2rem; 
+        border-radius: 16px; 
+        border: 1px solid rgba(255, 255, 255, 0.1); 
+        backdrop-filter: blur(20px);
+    }
+    .tags { margin-top: 2rem; padding-top: 2rem; border-top: 1px solid rgba(255, 255, 255, 0.1); }
+    .tag { 
+        display: inline-block; 
+        background: rgba(0, 212, 255, 0.1); 
+        border: 1px solid rgba(0, 212, 255, 0.3); 
+        padding: 0.3rem 0.8rem; 
+        margin: 0.2rem; 
+        border-radius: 20px; 
+        font-size: 0.8rem; 
+        color: #00d4ff; 
+        font-family: 'JetBrains Mono', monospace;
+    }
+    .preview-note {
+        text-align: center;
+        color: #a1a1aa;
+        font-size: 0.9rem;
+        margin-bottom: 2rem;
+        padding: 1rem;
+        background: rgba(0, 212, 255, 0.1);
+        border-radius: 12px;
+        font-family: 'JetBrains Mono', monospace;
+    }
+    </style>
+    </head>
+    <body>
+    <div class="preview-note">📖 PREVIEW MODE - This is how your article will look</div>
+    <h1>${title}</h1>
+    <div class="content">
+    ${content}
+    ${articleTags.length > 0 ? `<div class="tags"><strong>Tags:</strong> ${articleTags.map(tag => `<span class="tag">#${tag}</span>`).join('')}</div>` : ''}
+    </div>
+    </body>
+    </html>
+    `);
+}
+
+function goBack() {
+    if (confirm('确定要离开吗？未保存的更改将丢失。')) {
+        window.location.href = "index.html";
+    }
+}
+
+// 自动保存功能
+let autoSaveTimer;
+function startAutoSave() {
+    clearTimeout(autoSaveTimer);
+    autoSaveTimer = setTimeout(() => {
+        if (document.getElementById('title').value.trim() || quill.getText().trim()) {
+            saveAsDraft();
+        }
+    }, 30000);
+}
+
+quill.on('text-change', startAutoSave);
+document.getElementById('title').addEventListener('input', startAutoSave);
+
+// 标签输入回车事件
+document.getElementById('tagInput').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        addTagFromInput();
+    }
+});
+
+// 页面加载完成后初始化
+document.addEventListener('DOMContentLoaded', function() {
+    if (typeof createLanguageSwitcher === 'function') {
+        createLanguageSwitcher();
+        updatePageLanguage();
+    }
+    updateSuggestedTags();
+    updateWordCount();
+    updateTagDisplay();
+});
+
+// 防止意外离开页面
+window.addEventListener('beforeunload', function(e) {
+    if (document.getElementById('title').value.trim() || quill.getText().trim()) {
+        e.preventDefault();
+        e.returnValue = '';
+    }
+});
+
+// 标题重复检测
+document.getElementById('title').addEventListener('input', function() {
+    const title = this.value.trim();
+    const duplicateIndex = checkDuplicateTitle(title, index);
+    const warningDiv = document.getElementById('titleWarning') || createTitleWarning();
+    
+    if (title && duplicateIndex !== null) {
+        const articles = JSON.parse(localStorage.getItem('blog-articles') || '[]');
+        const duplicateArticle = articles[duplicateIndex];
+        warningDiv.style.display = 'block';
+        warningDiv.innerHTML = `⚠️ 标题已存在！创建时间: ${new Date(duplicateArticle.createTime).toLocaleDateString()}. 保存将覆盖现有文章。`;
+    } else {
+        warningDiv.style.display = 'none';
+    }
+});
+</script>
 </body>
 </html>
