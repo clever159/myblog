@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>关于我 - Cyber Blog</title>
+<script src="lang.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600&display=swap');
+
+:root {
+    --primary-cyan: #00d4ff;
+    --primary-magenta: #ff0080;
+    --accent-purple: #8b5cf6;
+    --bg-dark: #0a0a0f;
+    --bg-card: rgba(15, 15, 25, 0.8);
+    --text-primary: #ffffff;
+    --text-secondary: #a1a1aa;
+    --border-glow: rgba(0, 212, 255, 0.3);
+    --shadow-glow: 0 0 20px rgba(0, 212, 255, 0.1);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, var(--bg-dark) 0%, #0f0f1a 50%, #1a0f2e 100%);
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+    padding: 2rem;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 20% 80%, rgba(0, 212, 255, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 0, 128, 0.05) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+#container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Navigation */
+.nav-container {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 3rem;
+    padding: 1rem;
+}
+
+.nav-link {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover, .nav-link.active {
+    color: var(--primary-cyan);
+    background: rgba(0, 212, 255, 0.1);
+}
+
+/* Profile Section */
+.profile-section {
+    background: var(--bg-card);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 3rem;
+    margin-bottom: 2rem;
+    backdrop-filter: blur(20px);
+    box-shadow: var(--shadow-glow);
+    text-align: center;
+}
+
+.profile-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary-cyan), var(--primary-magenta));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    margin: 0 auto 2rem;
+    box-shadow: 0 8px 25px rgba(0, 212, 255, 0.3);
+}
+
+.profile-name {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, var(--primary-cyan), var(--primary-magenta));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.profile-title {
+    color: var(--text-secondary);
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.profile-bio {
+    color: var(--text-primary);
+    font-size: 1.1rem;
+    line-height: 1.8;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Info Sections */
+.info-section {
+    background: var(--bg-card);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    backdrop-filter: blur(20px);
+    box-shadow: var(--shadow-glow);
+}
+
+.section-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--primary-cyan);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.info-item {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.info-item:hover {
+    border-color: var(--primary-cyan);
+    transform: translateY(-2px);
+}
+
+.info-item-title {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.info-item-content {
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+/* Contact Links */
+.contact-links {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 2rem;
+}
+
+.contact-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.8rem 1.5rem;
+    background: rgba(0, 212, 255, 0.1);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    border-radius: 8px;
+    color: var(--primary-cyan);
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.contact-link:hover {
+    background: rgba(0, 212, 255, 0.2);
+    border-color: var(--primary-cyan);
+    transform: translateY(-2px);
+}
+
+/* Skills */
+.skills-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+}
+
+.skill-tag {
+    background: rgba(0, 212, 255, 0.1);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    color: var(--primary-cyan);
+    font-family: 'JetBrains Mono', monospace;
+}
+
+/* Timeline */
+.timeline {
+    position: relative;
+    padding-left: 2rem;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 1rem;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--primary-cyan), var(--primary-magenta));
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 2rem;
+    padding-left: 2rem;
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -0.5rem;
+    top: 0.5rem;
+    width: 1rem;
+    height: 1rem;
+    background: var(--primary-cyan);
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+}
+
+.timeline-date {
+    color: var(--primary-cyan);
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+.timeline-title {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.timeline-description {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+/* Floating Text Animation */
+.floating-text {
+    position: fixed;
+    font-size: 1.2rem;
+    font-weight: 600;
+    pointer-events: none;
+    user-select: none;
+    white-space: nowrap;
+    animation: float-up 1.5s forwards;
+    z-index: 10000;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+@keyframes float-up {
+    0% {
+        opacity: 1;
+        transform: translate3d(0, 0, 0) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translate3d(0, -60px, 0) scale(1.2);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    body {
+        padding: 1rem;
+    }
+
+    .profile-section {
+        padding: 2rem;
+    }
+
+    .profile-name {
+        font-size: 2rem;
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .contact-links {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .timeline {
+        padding-left: 1rem;
+    }
+
+    .timeline-item {
+        padding-left: 1.5rem;
+    }
+}
+</style>
+</head>
+<body>
+<div id="container">
+    <div class="nav-container">
+        <a href="index.html" class="nav-link" data-lang="home">🏠 首页</a>
+        <a href="editor.html" class="nav-link" data-lang="newPost">✍️ 新文章</a>
+        <a href="archive.html" class="nav-link" data-lang="archive">📚 归档</a>
+        <a href="about.html" class="nav-link active" data-lang="about">👤 关于</a>
+        <a href="settings.html" class="nav-link" data-lang="settings">⚙️ 设置</a>
+    </div>
+
+    <!-- Profile Section -->
+    <div class="profile-section">
+        <div class="profile-avatar" id="profileAvatar">🚀</div>
+        <h1 class="profile-name" id="profileName" data-lang="profileName">Cyber Blogger</h1>
+        <p class="profile-title" id="profileTitle" data-lang="profileTitle">// Full Stack Developer • Tech Enthusiast • Digital Creator</p>
+        <p class="profile-bio" id="profileBio" data-lang="profileBio">
+            欢迎来到我的赛博空间！我是一名热爱技术的开发者，专注于创造有意义的数字体验。
+            在这里，我分享我的技术见解、项目经验和对未来科技的思考。
+        </p>
+
+        <div class="contact-links">
+            <a href="mailto:contact@example.com" class="contact-link" id="emailLink">
+                📧 <span data-lang="contactEmail">联系邮箱</span>
+            </a>
+            <a href="https://github.com" class="contact-link" id="githubLink" target="_blank">
+                🐙 <span>GitHub</span>
+            </a>
+            <a href="https://twitter.com" class="contact-link" id="twitterLink" target="_blank">
+                🐦 <span>Twitter</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Skills Section -->
+    <div class="info-section">
+        <h2 class="section-title" data-lang="skillsTitle">💻 技能专长</h2>
+        <div class="skills-list" id="skillsList">
+            <!-- 技能标签将在这里动态加载 -->
+        </div>
+    </div>
+
+    <!-- Experience Section -->
+    <div class="info-section">
+        <h2 class="section-title" data-lang="experienceTitle">🚀 经历时间线</h2>
+        <div class="timeline" id="experienceTimeline">
+            <!-- 经历时间线将在这里动态加载 -->
+        </div>
+    </div>
+
+    <!-- Blog Stats Section -->
+    <div class="info-section">
+        <h2 class="section-title" data-lang="blogStatsTitle">📊 博客统计</h2>
+        <div class="info-grid" id="blogStats">
+            <!-- 博客统计将在这里动态加载 -->
+        </div>
+    </div>
+
+    <!-- Interests Section -->
+    <div class="info-section">
+        <h2 class="section-title" data-lang="interestsTitle">🎯 兴趣爱好</h2>
+        <div class="info-grid" id="interestsList">
+            <!-- 兴趣爱好将在这里动态加载 -->
+        </div>
+    </div>
+
+    <!-- Contact Section -->
+    <div class="info-section">
+        <h2 class="section-title" data-lang="contactTitle">📬 联系方式</h2>
+        <div class="info-grid" id="contactInfo">
+            <!-- 联系信息将在这里动态加载 -->
+        </div>
+    </div>
+</div>
+
+<script>
+// 浮现文字数组
+const texts = [
+    "✨", "💫", "⚡", "🔥", "💎", "🌟",
+    "CYBER", "TECH", "CODE", "DATA", "FUTURE", "DIGITAL",
+    "ABOUT", "PROFILE", "SKILLS", "EXPERIENCE", "CONTACT"
+];
+
+const colors = [
+    "#00d4ff", "#ff0080", "#8b5cf6", "#00ff88", "#ff4081", "#40e0d0"
+];
+
+// 创建浮现文字函数
+function createFloatingText(x, y) {
+    const textElement = document.createElement('div');
+    const randomText = texts[Math.floor(Math.random() * texts.length)];
+    const randomColor = colors[Math.floor(Math.random() * colors.length)];
+    textElement.textContent = randomText;
+    textElement.className = 'floating-text';
+    textElement.style.left = x + 'px';
+    textElement.style.top = y + 'px';
+    textElement.style.color = randomColor;
+
+    document.body.appendChild(textElement);
+
+    setTimeout(() => {
+        if (textElement && textElement.parentNode) {
+            textElement.remove();
+        }
+    }, 1500);
+}
+
+// 页面加载完成后初始化
+document.addEventListener('DOMContentLoaded', function() {
+    // 绑定点击事件
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('button, a, input, select, textarea')) {
+            createFloatingText(e.clientX, e.clientY);
+        }
+    });
+
+    if (typeof createLanguageSwitcher === 'function') {
+        createLanguageSwitcher();
+        updatePageLanguage();
+    }
+    loadProfileData();
+});
+
+// 空格键触发浮现文字
+document.addEventListener('keydown', function(e) {
+    if (e.key === ' ' && !e.target.closest('input, textarea')) {
+        e.preventDefault();
+        const centerX = window.innerWidth / 2;
+        const centerY = window.innerHeight / 2;
+        createFloatingText(centerX, centerY);
+    }
+});
+
+// 加载个人资料数据
+function loadProfileData() {
+    const profileData = JSON.parse(localStorage.getItem('blog-profile') || '{}');
+    
+    // 设置默认值
+    const defaults = {
+        name: 'Cyber Blogger',
+        title: '// Full Stack Developer • Tech Enthusiast • Digital Creator',
+        bio: '欢迎来到我的赛博空间！我是一名热爱技术的开发者，专注于创造有意义的数字体验。在这里，我分享我的技术见解、项目经验和对未来科技的思考。',
+        avatar: '🚀',
+        email: 'contact@example.com',
+        github: 'https://github.com',
+        twitter: 'https://twitter.com'
+    };
+    
+    // 合并默认值和用户数据
+    const profile = { ...defaults, ...profileData };
+    
+    // 更新页面内容
+    document.getElementById('profileAvatar').textContent = profile.avatar;
+    document.getElementById('profileName').textContent = profile.name;
+    document.getElementById('profileTitle').textContent = profile.title;
+    document.getElementById('profileBio').textContent = profile.bio;
+    
+    // 更新联系链接
+    const emailLink = document.getElementById('emailLink');
+    emailLink.href = `mailto:${profile.email}`;
+    
+    const githubLink = document.getElementById('githubLink');
+    githubLink.href = profile.github;
+    
+    const twitterLink = document.getElementById('twitterLink');
+    twitterLink.href = profile.twitter;
+
+    // 加载其他内容
+    loadSkills();
+    loadExperience();
+    loadBlogStats();
+    loadInterests();
+    loadContactInfo();
+}
+
+// 加载技能列表
+function loadSkills() {
+    const skills = JSON.parse(localStorage.getItem('blog-profile-skills') || '[]');
+    const defaultSkills = [
+        'JavaScript', 'Python', 'React', 'Node.js', 'Vue.js', 'TypeScript',
+        'HTML/CSS', 'Git', 'Docker', 'Linux', 'MongoDB', 'MySQL'
+    ];
+
+    const skillsToShow = skills.length > 0 ? skills : defaultSkills;
+    const skillsList = document.getElementById('skillsList');
+
+    skillsList.innerHTML = skillsToShow.map(skill =>
+        `<span class="skill-tag">${skill}</span>`
+    ).join('');
+}
+
+// 加载经历时间线
+function loadExperience() {
+    const experience = JSON.parse(localStorage.getItem('blog-profile-experience') || '[]');
+    const defaultExperience = [
+        {
+            date: '2024 - 至今',
+            title: '全栈开发工程师',
+            description: '负责前后端开发，参与多个项目的架构设计和技术选型。'
+        },
+        {
+            date: '2023 - 2024',
+            title: '前端开发工程师',
+            description: '专注于用户界面开发，使用现代前端框架构建响应式应用。'
+        },
+        {
+            date: '2022 - 2023',
+            title: '开始技术博客',
+            description: '开始记录和分享技术学习心得，与开发者社区互动交流。'
+        }
+    ];
+
+    const experienceToShow = experience.length > 0 ? experience : defaultExperience;
+    const timeline = document.getElementById('experienceTimeline');
+
+    timeline.innerHTML = experienceToShow.map(item => `
+        <div class="timeline-item">
+            <div class="timeline-date">${item.date}</div>
+            <div class="timeline-title">${item.title}</div>
+            <div class="timeline-description">${item.description}</div>
+        </div>
+    `).join('');
+}
+
+// 加载博客统计
+function loadBlogStats() {
+    const articles = JSON.parse(localStorage.getItem('blog-articles') || '[]')
+        .filter(article => !article.isDraft);
+    const categories = JSON.parse(localStorage.getItem('blog-categories') || '[]');
+
+    // 计算统计数据
+    const totalArticles = articles.length;
+    const totalWords = articles.reduce((sum, article) => {
+        return sum + article.content.replace(/<[^>]*>/g, '').split(/\s+/).filter(word => word.length > 0).length;
+    }, 0);
+
+    // 收集所有标签
+    const allTags = new Set();
+    articles.forEach(article => {
+        if (article.tags) {
+            article.tags.forEach(tag => allTags.add(tag));
+        }
+    });
+
+    // 计算博客运行天数
+    const firstArticle = articles.sort((a, b) => new Date(a.createTime) - new Date(b.createTime))[0];
+    const daysSinceStart = firstArticle ?
+        Math.floor((new Date() - new Date(firstArticle.createTime)) / (1000 * 60 * 60 * 24)) : 0;
+
+    // 获取当前语言
+    const currentLang = localStorage.getItem('blog-language') || 'zh';
+    const t = (key) => {
+        return (typeof languages !== 'undefined' && languages[currentLang] && languages[currentLang][key])
+            ? languages[currentLang][key]
+            : key;
+    };
+
+    const statsData = [
+        { title: `📝 ${t('totalArticles')}`, content: totalArticles.toString() },
+        { title: `📖 ${t('totalWords')}`, content: totalWords.toLocaleString() },
+        { title: `🏷️ ${t('totalTags')}`, content: allTags.size.toString() },
+        { title: `📁 ${t('totalCategories')}`, content: categories.length.toString() },
+        { title: `📅 ${t('runningDays')}`, content: daysSinceStart.toString() },
+        { title: `📊 ${t('averageWords')}`, content: totalArticles > 0 ? Math.round(totalWords / totalArticles).toString() : '0' }
+    ];
+
+    const blogStats = document.getElementById('blogStats');
+    blogStats.innerHTML = statsData.map(stat => `
+        <div class="info-item">
+            <div class="info-item-title">${stat.title}</div>
+            <div class="info-item-content">${stat.content}</div>
+        </div>
+    `).join('');
+}
+
+// 加载兴趣爱好
+function loadInterests() {
+    const interests = JSON.parse(localStorage.getItem('blog-profile-interests') || '[]');
+    const defaultInterests = [
+        { title: '🎮 游戏开发', content: '热爱独立游戏开发，探索交互式娱乐的可能性' },
+        { title: '🤖 人工智能', content: '关注AI技术发展，探索机器学习在实际项目中的应用' },
+        { title: '🎨 UI/UX设计', content: '注重用户体验设计，追求简洁优雅的界面' },
+        { title: '📚 技术阅读', content: '持续学习新技术，阅读技术书籍和文档' }
+    ];
+
+    const interestsToShow = interests.length > 0 ? interests : defaultInterests;
+    const interestsList = document.getElementById('interestsList');
+
+    interestsList.innerHTML = interestsToShow.map(interest => `
+        <div class="info-item">
+            <div class="info-item-title">${interest.title}</div>
+            <div class="info-item-content">${interest.content}</div>
+        </div>
+    `).join('');
+}
+
+// 加载联系信息
+function loadContactInfo() {
+    const contactData = JSON.parse(localStorage.getItem('blog-profile-contact') || '{}');
+    const defaultContact = [
+        { title: '📧 邮箱', content: 'contact@example.com' },
+        { title: '🌐 网站', content: 'https://myblog.com' },
+        { title: '📍 位置', content: '中国 • 北京' },
+        { title: '💼 工作状态', content: '开放合作机会' }
+    ];
+
+    const contactToShow = Object.keys(contactData).length > 0 ?
+        Object.entries(contactData).map(([key, value]) => ({ title: key, content: value })) :
+        defaultContact;
+
+    const contactInfo = document.getElementById('contactInfo');
+    contactInfo.innerHTML = contactToShow.map(contact => `
+        <div class="info-item">
+            <div class="info-item-title">${contact.title}</div>
+            <div class="info-item-content">${contact.content}</div>
+        </div>
+    `).join('');
+}
+</script>
+</body>
+</html>

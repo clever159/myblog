@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>设置</title>
+<script src="lang.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600&display=swap');
+
+:root {
+    --primary-cyan: #00d4ff;
+    --primary-magenta: #ff0080;
+    --accent-purple: #8b5cf6;
+    --bg-dark: #0a0a0f;
+    --bg-card: rgba(15, 15, 25, 0.8);
+    --text-primary: #ffffff;
+    --text-secondary: #a1a1aa;
+    --border-glow: rgba(0, 212, 255, 0.3);
+    --shadow-glow: 0 0 20px rgba(0, 212, 255, 0.1);
+    --danger-red: #ef4444;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, var(--bg-dark) 0%, #0f0f1a 50%, #1a0f2e 100%);
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+    padding: 2rem;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 20% 80%, rgba(0, 212, 255, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 0, 128, 0.05) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+#container {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+/* Navigation */
+.nav-container {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    padding: 1rem;
+}
+
+.nav-link {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+    color: var(--primary-cyan);
+    background: rgba(0, 212, 255, 0.1);
+}
+
+/* Header */
+.header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.main-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, var(--primary-cyan), var(--primary-magenta));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.subtitle {
+    color: var(--text-secondary);
+    font-family: 'JetBrains Mono', monospace;
+}
+
+/* Settings Container */
+.settings-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+/* Setting Group */
+.setting-group {
+    background: var(--bg-card);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 2rem;
+    backdrop-filter: blur(20px);
+    box-shadow: var(--shadow-glow);
+    transition: all 0.3s ease;
+}
+
+.setting-group:hover {
+    border-color: rgba(0, 212, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+.setting-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: var(--primary-cyan);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.setting-description {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+}
+
+/* Buttons */
+button {
+    background: rgba(0, 212, 255, 0.1);
+    color: var(--primary-cyan);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    margin: 0.3rem;
+    display: inline-block;
+}
+
+button:hover {
+    background: rgba(0, 212, 255, 0.2);
+    border-color: var(--primary-cyan);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 212, 255, 0.2);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+.primary-btn {
+    background: linear-gradient(135deg, var(--primary-cyan), var(--primary-magenta)) !important;
+    color: white !important;
+    border: none !important;
+}
+
+.primary-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 212, 255, 0.4);
+}
+
+.danger-btn {
+    background: rgba(239, 68, 68, 0.1) !important;
+    color: var(--danger-red) !important;
+    border: 1px solid rgba(239, 68, 68, 0.3) !important;
+}
+
+.danger-btn:hover {
+    background: rgba(239, 68, 68, 0.2) !important;
+    border-color: var(--danger-red) !important;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2) !important;
+}
+
+/* Stats Display */
+#statsDisplay {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    color: var(--text-secondary);
+    line-height: 1.8;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
+}
+
+.stat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stat-item:last-child {
+    border-bottom: none;
+}
+
+.stat-label {
+    color: var(--text-secondary);
+}
+
+.stat-value {
+    color: var(--primary-cyan);
+    font-weight: 600;
+}
+
+/* File Input */
+input[type="file"] {
+    display: none;
+}
+
+.file-input-label {
+    background: rgba(0, 212, 255, 0.1);
+    color: var(--primary-cyan);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: inline-block;
+    margin: 0.3rem;
+}
+
+.file-input-label:hover {
+    background: rgba(0, 212, 255, 0.2);
+    border-color: var(--primary-cyan);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 212, 255, 0.2);
+}
+
+/* Back Button */
+.back-container {
+    text-align: center;
+    margin-top: 3rem;
+}
+
+/* Floating Text Animation */
+.floating-text {
+    position: fixed;
+    font-size: 1.2rem;
+    font-weight: 600;
+    pointer-events: none;
+    user-select: none;
+    white-space: nowrap;
+    animation: float-up 1.5s forwards;
+    z-index: 10000;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+@keyframes float-up {
+    0% {
+        opacity: 1;
+        transform: translate3d(0, 0, 0) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translate3d(0, -60px, 0) scale(1.2);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    body {
+        padding: 1rem;
+    }
+    
+    .main-title {
+        font-size: 2rem;
+    }
+    
+    .settings-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .setting-group {
+        padding: 1.5rem;
+    }
+    
+    button, .file-input-label {
+        width: 100%;
+        margin: 0.2rem 0;
+    }
+}
+</style>
+</head>
+<body>
+<div id="container">
+    <div class="nav-container">
+        <a href="index.html" class="nav-link" data-lang="home" title="返回首页">🏠 首页</a>
+        <a href="editor.html" class="nav-link" data-lang="newPost" title="创建新文章">✍️ 新文章</a>
+    </div>
+
+    <div class="header">
+        <h1 class="main-title" data-lang="settingsTitle">Cyber Settings</h1>
+        <p class="subtitle">// Configure • Manage • Optimize</p>
+    </div>
+
+    <div class="settings-container">
+                <!-- 数据管理 -->
+        <div class="setting-group">
+            <div class="setting-title" data-lang="dataManagement">📊 数据管理</div>
+            <div class="setting-description">管理您的博客数据，包括导入、导出和备份功能。</div>
+            <button onclick="exportData()" data-lang="exportData" data-tooltip="exportDataTooltip">📤 导出数据</button>
+            <label for="importFile" class="file-input-label" data-lang="importData" data-tooltip="importDataTooltip">📥 导入数据</label>
+            <input type="file" id="importFile" accept=".json" onchange="importData(this)">
+            <button onclick="backupData()" data-tooltip="backupTooltip">💾 创建备份</button>
+            <button onclick="showBackups()" data-tooltip="showBackupsTooltip">📋 查看备份</button>
+        </div>
+
+        <!-- 编辑器偏好 -->
+        <div class="setting-group">
+            <div class="setting-title" data-lang="editorPreferences">📝 编辑器偏好</div>
+            <div class="setting-description">自定义编辑器的行为和外观设置。</div>
+            <button onclick="setDefaultFontSize()" data-lang="defaultFontSize" data-tooltip="defaultFontSizeTooltip">📏 默认字体大小</button>
+            <button onclick="toggleAutoSave()" data-lang="autoSaveSettings" data-tooltip="autoSaveTooltip">💾 自动保存设置</button>
+            <button onclick="exportTemplates()" data-tooltip="exportTemplateTooltip">📋 导出模板</button>
+            <button onclick="importTemplates()" data-tooltip="importTemplateTooltip">📥 导入模板</button>
+        </div>
+
+        <!-- 高级统计 -->
+        <div class="setting-group">
+            <div class="setting-title">📈 高级统计</div>
+            <div class="setting-description">查看详细的博客使用统计和分析数据。</div>
+            <div id="statsDisplay"></div>
+            <button onclick="updateStats()" data-tooltip="refreshStatsTooltip">🔄 刷新统计</button>
+            <button onclick="exportStats()" data-tooltip="exportStatsTooltip">📊 导出统计</button>
+        </div>
+
+        <!-- 系统工具 -->
+        <div class="setting-group">
+            <div class="setting-title">🛠️ 系统工具</div>
+            <div class="setting-description">系统维护和诊断工具，确保博客正常运行。</div>
+            <button onclick="validateData()" data-tooltip="validateDataTooltip">✅ 验证数据</button>
+            <button onclick="repairData()" data-tooltip="repairDataTooltip">🔧 修复数据</button>
+            <button onclick="showSystemInfo()" data-tooltip="systemInfoTooltip">ℹ️ 系统信息</button>
+            <button onclick="cleanReadHistory()" data-tooltip="cleanHistoryTooltip">🧹 清理阅读历史</button>
+        </div>
+
+        <!-- 标题管理 -->
+        <div class="setting-group">
+            <div class="setting-title" data-lang="titleManagement">🔍 标题管理</div>
+            <div class="setting-description">检测和管理重复的文章标题。</div>
+            <button onclick="checkDuplicateTitles()" data-lang="checkDuplicateTitles" data-tooltip="checkDuplicateTooltip">🔍 检查重复标题</button>
+            <button onclick="removeDuplicateTitles()" data-lang="removeDuplicateTitles" data-tooltip="removeDuplicateTooltip">🗑️ 移除重复标题</button>
+            <button onclick="optimizeStorage()" data-lang="optimizeStorage" data-tooltip="optimizeStorageTooltip">⚡ 优化存储</button>
+        </div>
+
+        <!-- 危险区域 -->
+        <div class="setting-group">
+            <div class="setting-title">⚠️ 危险区域</div>
+            <div class="setting-description">谨慎操作！这些操作可能会永久删除您的数据。</div>
+            <button class="danger-btn" onclick="clearAllData()" data-lang="clearAll" data-tooltip="clearAllTooltip">🗑️ 清空所有数据</button>
+            <button class="danger-btn" onclick="resetSettings()" data-tooltip="resetSettingsTooltip">🔄 重置设置</button>
+            <button class="danger-btn" onclick="factoryReset()" data-tooltip="factoryResetTooltip">⚠️ 恢复出厂设置</button>
+        </div>
+
+    <div class="back-container">
+        <button onclick="goBack()" class="primary-btn" data-tooltip="homeTooltip">🔙 返回博客</button>
+    </div>
+</div>
+
+<script>
+// 浮现文字数组 - 简化版
+const texts = [
+    "✨", "💫", "⚡", "🔥", "💎", "🌟",
+    "CONFIG", "SYSTEM", "SETTINGS", "CYBER", "TECH", "ADMIN"
+];
+
+const colors = [
+    "#00d4ff", "#ff0080", "#8b5cf6", "#00ff88", "#ff4081", "#40e0d0"
+];
+
+// 创建浮现文字函数
+function createFloatingText(x, y) {
+    const textElement = document.createElement('div');
+    const randomText = texts[Math.floor(Math.random() * texts.length)];
+    const randomColor = colors[Math.floor(Math.random() * colors.length)];
+    textElement.textContent = randomText;
+    textElement.className = 'floating-text';
+    textElement.style.left = x + 'px';
+    textElement.style.top = y + 'px';
+    textElement.style.color = randomColor;
+    
+    document.body.appendChild(textElement);
+    
+    setTimeout(() => {
+        if (textElement && textElement.parentNode) {
+            textElement.remove();
+        }
+    }, 1500);
+}
+
+// 确保在页面完全加载后绑定事件
+document.addEventListener('DOMContentLoaded', function() {
+    // 绑定点击事件
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('button, a, input, select, textarea, label')) {
+            createFloatingText(e.clientX, e.clientY);
+        }
+    });
+    
+    // 初始化语言切换
+    if (typeof createLanguageSwitcher === 'function') {
+        createLanguageSwitcher();
+        updatePageLanguage();
+    }
+    updateStats();
+});
+
+function goBack() {
+    window.location.href = 'index.html';
+}
+
+function exportData() {
+    const articles = JSON.parse(localStorage.getItem('blog-articles') || '[]');
+    const settings = JSON.parse(localStorage.getItem('blog-settings') || '{}');
+    const readHistory = JSON.parse(localStorage.getItem('blog-read-history') || '[]');
+    
+    const data = {
+        articles,
+        settings,
+        readHistory,
+        exportDate: new Date().toISOString(),
+        version: '1.0'
+    };
+    
+    const dataStr = JSON.stringify(data, null, 2);
+    const dataBlob = new Blob([dataStr], {type: 'application/json'});
+    const url = URL.createObjectURL(dataBlob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `cyber-blog-backup-${new Date().toISOString().split('T')[0]}.json`;
+    link.click();
+    URL.revokeObjectURL(url);
+    alert('✅ 数据导出成功！');
+}
+
+function importData(input) {
+    const file = input.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const data = JSON.parse(e.target.result);
+            if (data.articles) {
+                if (confirm('⚠️ 这将替换所有现有数据。继续吗？')) {
+                    localStorage.setItem('blog-articles', JSON.stringify(data.articles));
+                    if (data.settings) {
+                        localStorage.setItem('blog-settings', JSON.stringify(data.settings));
+                    }
+                    if (data.readHistory) {
+                        localStorage.setItem('blog-read-history', JSON.stringify(data.readHistory));
+                    }
+                    alert('✅ 数据导入成功！');
+                    updateStats();
+                }
+            } else {
+                alert('❌ 无效的文件格式！');
+            }
+        } catch (error) {
+            alert('❌ 读取文件错误: ' + error.message);
+        }
+    };
+    reader.readAsText(file);
+}
+
+function updateStats() {
+    const articles = JSON.parse(localStorage.getItem('blog-articles') || '[]');
+    const readHistory = JSON.parse(localStorage.getItem('blog-read-history') || '[]');
+    
+    const totalWords = articles.reduce((sum, article) => 
+        sum + article.content.replace(/<[^>]*>/g, '').split(/\s+/).filter(word => word.length > 0).length, 0
+    );
+    
+    const publishedArticles = articles.filter(article => !article.isDraft);
+    const draftArticles = articles.filter(article => article.isDraft);
+    
+    const allTags = [...new Set(articles.flatMap(article => article.tags || []))];
+    
+    const statsHtml = `
+        <div class="stat-item">
+            <span class="stat-label">📝 总文章数</span>
+            <span class="stat-value">${articles.length}</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">✅ 已发布</span>
+            <span class="stat-value">${publishedArticles.length}</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">📄 草稿</span>
+            <span class="stat-value">${draftArticles.length}</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">📊 总字数</span>
+            <span class="stat-value">${totalWords.toLocaleString()}</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">📈 平均字数</span>
+            <span class="stat-value">${Math.round(totalWords / articles.length) || 0}</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">🏷️ 标签数量</span>
+            <span class="stat-value">${allTags.length}</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">👁️ 阅读记录</span>
+            <span class="stat-value">${readHistory.length}</span>
+        </div>
+    `;
+    
+    document.getElementById('statsDisplay').innerHTML = statsHtml;
+}
+
+function backupData() {
+    const timestamp = new Date().toISOString();
+    const articles = JSON.parse(localStorage.getItem('blog-articles') || '[]');
+    const backups = JSON.parse(localStorage.getItem('blog-backups') || '[]');
+    
+    const backup = {
+        id: Date.now(),
+        timestamp,
+        articles,
+        count: articles.length
+    };
+    
+    backups.unshift(backup);
+    backups.splice(10); // 只保留最近10个备份
+    
+    localStorage.setItem('blog-backups', JSON.stringify(backups));
+    alert(`✅ 备份创建成功！\n时间: ${new Date(timestamp).toLocaleString()}\n文章数: ${articles.length}`);
+}
+
+function showBackups() {
+    const backups = JSON.parse(localStorage.getItem('blog-backups') || '[]');
+    if (backups.length === 0) {
+        alert('📋 暂无备份记录');
+        return;
+    }
+    
+    const backupList = backups.map((backup, index) => 
+        `${index + 1}. ${new Date(backup.timestamp).toLocaleString()} (${backup.count} 篇文章)`
+    ).join('\n');
+    
+    alert(`📋 备份列表:\n\n${backupList}`);
+}
+
+function clearAllData() {
+    if (confirm('⚠️ 确定要清空所有数据吗？此操作不可恢复！')) {
+        if (confirm('⚠️ 最后确认：这将删除所有文章、设置和历史记录！')) {
+            localStorage.removeItem('blog-articles');
+            localStorage.removeItem('blog-settings');
+            localStorage.removeItem('blog-read-history');
+            localStorage.removeItem('blog-backups');
+            alert('✅ 所有数据已清空！');
+            updateStats();
+        }
+    }
+}
+
+function validateData() {
+    const articles = JSON.parse(localStorage.getItem('blog-articles') || '[]');
+    const issues = [];
+
+    articles.forEach((article, index) => {
+        if (!article.title) issues.push(`文章 ${index + 1}: 缺少标题`);
+        if (!article.content) issues.push(`文章 ${index + 1}: 缺少内容`);
+        if (!article.createTime) issues.push(`文章 ${index + 1}: 缺少创建时间`);
+    });
+
+    if (issues.length === 0) {
+        alert('✅ 数据验证通过 - 未发现问题');
+    } else {
+        alert(`⚠️ 数据验证发现 ${issues.length} 个问题:\n\n${issues.join('\n')}`);
+    }
+}
+
+function repairData() {
+    const articles = JSON.parse(localStorage.getItem('blog-articles') || '[]');
+    let repaired = 0;
+
+    articles.forEach(article => {
+        if (!article.createTime) {
+            article.createTime = new Date().toISOString();
+            repaired++;
+        }
+        if (!article.lastModified) {
+            article.lastModified = article.createTime || new Date().toISOString();
+            repaired++;
+        }
+        if (!article.tags) {
+            article.tags = [];
+            repaired++;
+        }
+    });
+
+    if (repaired > 0) {
+        localStorage.setItem('blog-articles', JSON.stringify(articles));
+        alert(`✅ 修复了 ${repaired} 个数据问题`);
+        updateStats();
+    } else {
+        alert('ℹ️ 未发现需要修复的数据问题');
+    }
+}
+
+function showSystemInfo() {
+    const info = `
+🖥️ 系统信息:
+
+浏览器: ${navigator.userAgent.split(' ')[0]}
+语言: ${navigator.language}
+平台: ${navigator.platform}
+在线状态: ${navigator.onLine ? '在线' : '离线'}
+存储配额: ${navigator.storage ? '支持' : '不支持'}
+本地时间: ${new Date().toLocaleString()}
+
+💾 存储使用情况:
+文章数据: ${(JSON.stringify(localStorage.getItem('blog-articles') || '[]').length / 1024).toFixed(2)} KB
+设置数据: ${(JSON.stringify(localStorage.getItem('blog-settings') || '{}').length / 1024).toFixed(2)} KB
+历史记录: ${(JSON.stringify(localStorage.getItem('blog-read-history') || '[]').length / 1024).toFixed(2)} KB
+    `;
+    alert(info);
+}
+
+function cleanReadHistory() {
+    if (confirm('⚠️ 确定要清空所有阅读历史吗？')) {
+        localStorage.removeItem('blog-read-history');
+        alert('✅ 阅读历史已清空');
+        updateStats();
+    }
+}
+
+function resetSettings() {
+    if (confirm('⚠️ 确定要重置所有设置为默认值吗？')) {
+        localStorage.removeItem('blog-settings');
+        localStorage.removeItem('word-target');
+        localStorage.removeItem('article-font-size');
+        localStorage.removeItem('auto-save-enabled');
+        localStorage.removeItem('default-font-size');
+        alert('✅ 设置已重置为默认值！');
+    }
+}
+
+function factoryReset() {
+    if (confirm('⚠️ 恢复出厂设置将清空所有数据和设置！确定继续吗？')) {
+        if (confirm('⚠️ 最后确认：这将删除所有内容并无法恢复！')) {
+            localStorage.clear();
+            alert('✅ 已恢复出厂设置！页面将重新加载。');
+            setTimeout(() => {
+                window.location.reload();
+            }, 2000);
+        }
+    }
+}
+
+function checkDuplicateTitles() {
+    const articles = JSON.parse(localStorage.getItem('blog-articles') || '[]');
+    const titleMap = new Map();
+    const duplicates = [];
+
+    articles.forEach((article, index) => {
+        const title = article.title.toLowerCase();
+        if (titleMap.has(title)) {
+            duplicates.push({
+                title: article.title,
+                indices: [titleMap.get(title), index]
+            });
+        } else {
+            titleMap.set(title, index);
+        }
+    });
+
+    if (duplicates.length === 0) {
+        const noDuplicatesMessage = typeof t === 'function' ? t('noDuplicatesFound') : '✅ 未发现重复标题';
+        alert(noDuplicatesMessage);
+    } else {
+        const duplicateList = duplicates.map(dup => 
+            `"${dup.title}" (索引: ${dup.indices.join(', ')})`
+        ).join('\n');
+        alert(`⚠️ 发现重复标题:\n\n${duplicateList}`);
+    }
+}
+
+function removeDuplicateTitles() {
+    const articles = JSON.parse(localStorage.getItem('blog-articles') || '[]');
+    const seen = new Set();
+    const unique = [];
+    let removedCount = 0;
+    
+    articles.forEach(article => {
+        const titleKey = article.title.toLowerCase();
+        if (!seen.has(titleKey)) {
+            seen.add(titleKey);
+            unique.push(article);
+        } else {
+            removedCount++;
+        }
+    });
+    
+    if (removedCount > 0) {
+        localStorage.setItem('blog-articles', JSON.stringify(unique));
+        alert(`✅ 移除了 ${removedCount} 个重复标题。保留了每个标题的第一次出现。`);
+        updateStats();
+    } else {
+        alert('ℹ️ 未找到要移除的重复标题。');
+    }
+}
+
+function optimizeStorage() {
+    const articles = JSON.parse(localStorage.getItem('blog-articles') || '[]');
+    const uniqueArticles = [...new Map(articles.map(article => [article.title.toLowerCase(), article])).values()];
+    const removedCount = articles.length - uniqueArticles.length;
+
+    if (removedCount > 0) {
+        localStorage.setItem('blog-articles', JSON.stringify(uniqueArticles));
+        const optimizeMessage = typeof t === 'function' ?
+            t('optimizeComplete').replace('{count}', removedCount) :
+            `✅ 优化完成，移除了 ${removedCount} 个重复文章。`;
+        alert(optimizeMessage);
+        updateStats();
+    } else {
+        const noChangeMessage = typeof t === 'function' ? t('optimizeNoChange') : 'ℹ️ 未发现重复文章，存储已优化。';
+        alert(noChangeMessage);
+    }
+}
+
+// 新增缺失的功能实现
+function setDefaultFontSize() {
+    const currentSize = localStorage.getItem('default-font-size') || '16';
+    const promptMessage = typeof t === 'function' ? t('setFontSizePrompt') : '设置默认字体大小 (12-24px):';
+    const newSize = prompt(promptMessage, currentSize);
+
+    if (newSize && !isNaN(newSize) && newSize >= 12 && newSize <= 24) {
+        localStorage.setItem('default-font-size', newSize);
+        const successMessage = typeof t === 'function' ?
+            t('fontSizeSet').replace('{size}', newSize) :
+            `✅ 默认字体大小已设置为 ${newSize}px`;
+        alert(successMessage);
+    } else if (newSize) {
+        const invalidMessage = typeof t === 'function' ? t('fontSizeInvalid') : '❌ 请输入12-24之间的数字';
+        alert(invalidMessage);
+    }
+}
+
+function toggleAutoSave() {
+    const current = localStorage.getItem('auto-save-enabled') !== 'false';
+    const newState = !current;
+    localStorage.setItem('auto-save-enabled', newState);
+    const message = typeof t === 'function' ?
+        (newState ? t('autoSaveEnabled') : t('autoSaveDisabled')) :
+        `✅ 自动保存已${newState ? '开启' : '关闭'}`;
+    alert(message);
+}
+
+function exportTemplates() {
+    const templates = JSON.parse(localStorage.getItem('blog-templates') || '[]');
+    if (templates.length === 0) {
+        alert('📋 暂无模板可导出');
+        return;
+    }
+
+    const dataStr = JSON.stringify(templates, null, 2);
+    const dataBlob = new Blob([dataStr], {type: 'application/json'});
+    const url = URL.createObjectURL(dataBlob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `blog-templates-${new Date().toISOString().split('T')[0]}.json`;
+    link.click();
+    URL.revokeObjectURL(url);
+    alert('✅ 模板导出成功！');
+}
+
+function importTemplates() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+    input.onchange = function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            try {
+                const templates = JSON.parse(event.target.result);
+                if (Array.isArray(templates)) {
+                    localStorage.setItem('blog-templates', JSON.stringify(templates));
+                    alert(`✅ 成功导入 ${templates.length} 个模板！`);
+                } else {
+                    alert('❌ 无效的模板文件格式');
+                }
+            } catch (error) {
+                alert('❌ 读取文件失败: ' + error.message);
+            }
+        };
+        reader.readAsText(file);
+    };
+    input.click();
+}
+
+function exportStats() {
+    const articles = JSON.parse(localStorage.getItem('blog-articles') || '[]');
+    const readHistory = JSON.parse(localStorage.getItem('blog-read-history') || '[]');
+
+    const stats = {
+        totalArticles: articles.length,
+        publishedArticles: articles.filter(a => !a.isDraft).length,
+        draftArticles: articles.filter(a => a.isDraft).length,
+        totalWords: articles.reduce((sum, article) =>
+            sum + article.content.replace(/<[^>]*>/g, '').split(/\s+/).filter(word => word.length > 0).length, 0
+        ),
+        totalTags: [...new Set(articles.flatMap(article => article.tags || []))].length,
+        readHistoryCount: readHistory.length,
+        exportDate: new Date().toISOString()
+    };
+
+    const dataStr = JSON.stringify(stats, null, 2);
+    const dataBlob = new Blob([dataStr], {type: 'application/json'});
+    const url = URL.createObjectURL(dataBlob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `blog-statistics-${new Date().toISOString().split('T')[0]}.json`;
+    link.click();
+    URL.revokeObjectURL(url);
+    alert('✅ 统计数据导出成功！');
+}
+</script>
+</body>
+</html>
+

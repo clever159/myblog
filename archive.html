@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>文章归档 - Cyber Blog</title>
+<script src="lang.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600&display=swap');
+
+:root {
+    --primary-cyan: #00d4ff;
+    --primary-magenta: #ff0080;
+    --accent-purple: #8b5cf6;
+    --bg-dark: #0a0a0f;
+    --bg-card: rgba(15, 15, 25, 0.8);
+    --text-primary: #ffffff;
+    --text-secondary: #a1a1aa;
+    --border-glow: rgba(0, 212, 255, 0.3);
+    --shadow-glow: 0 0 20px rgba(0, 212, 255, 0.1);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, var(--bg-dark) 0%, #0f0f1a 50%, #1a0f2e 100%);
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+    padding: 2rem;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 20% 80%, rgba(0, 212, 255, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 0, 128, 0.05) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+#container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Navigation */
+.nav-container {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 3rem;
+    padding: 1rem;
+}
+
+.nav-link {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover, .nav-link.active {
+    color: var(--primary-cyan);
+    background: rgba(0, 212, 255, 0.1);
+}
+
+/* Header */
+.header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.main-title {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, var(--primary-cyan), var(--primary-magenta));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.subtitle {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+/* Archive Controls */
+.archive-controls {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+}
+
+.archive-btn {
+    background: rgba(0, 212, 255, 0.1);
+    color: var(--primary-cyan);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.archive-btn:hover, .archive-btn.active {
+    background: rgba(0, 212, 255, 0.2);
+    border-color: var(--primary-cyan);
+    transform: translateY(-2px);
+}
+
+/* Archive Content */
+.archive-content {
+    display: grid;
+    gap: 2rem;
+}
+
+.archive-section {
+    background: var(--bg-card);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 2rem;
+    backdrop-filter: blur(20px);
+    box-shadow: var(--shadow-glow);
+}
+
+.archive-section-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--primary-cyan);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.archive-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.archive-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.archive-item:hover {
+    border-color: var(--primary-cyan);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 212, 255, 0.1);
+}
+
+.archive-item-info {
+    flex: 1;
+}
+
+.archive-item-title {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.archive-item-meta {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.archive-item-count {
+    background: rgba(0, 212, 255, 0.2);
+    color: var(--primary-cyan);
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* Timeline */
+.timeline {
+    position: relative;
+    padding-left: 2rem;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 1rem;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--primary-cyan), var(--primary-magenta));
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 2rem;
+    padding-left: 2rem;
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -0.5rem;
+    top: 0.5rem;
+    width: 1rem;
+    height: 1rem;
+    background: var(--primary-cyan);
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+}
+
+.timeline-date {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--primary-cyan);
+    margin-bottom: 1rem;
+}
+
+.timeline-articles {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.timeline-article {
+    padding: 0.8rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.timeline-article:hover {
+    border-color: var(--primary-cyan);
+    background: rgba(0, 212, 255, 0.05);
+}
+
+.timeline-article-title {
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 0.3rem;
+}
+
+.timeline-article-meta {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+}
+
+/* Stats */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.stat-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 1.5rem;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    border-color: var(--primary-cyan);
+    transform: translateY(-2px);
+}
+
+.stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-cyan);
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+/* Floating Text Animation */
+.floating-text {
+    position: fixed;
+    font-size: 1.2rem;
+    font-weight: 600;
+    pointer-events: none;
+    user-select: none;
+    white-space: nowrap;
+    animation: float-up 1.5s forwards;
+    z-index: 10000;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+@keyframes float-up {
+    0% {
+        opacity: 1;
+        transform: translate3d(0, 0, 0) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translate3d(0, -60px, 0) scale(1.2);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    body {
+        padding: 1rem;
+    }
+    
+    .main-title {
+        font-size: 2rem;
+    }
+    
+    .archive-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .timeline {
+        padding-left: 1rem;
+    }
+    
+    .timeline-item {
+        padding-left: 1.5rem;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+</head>
+<body>
+<div id="container">
+    <div class="nav-container">
+        <a href="index.html" class="nav-link" data-lang="home">🏠 首页</a>
+        <a href="editor.html" class="nav-link" data-lang="newPost">✍️ 新文章</a>
+        <a href="archive.html" class="nav-link active" data-lang="archive">📚 归档</a>
+        <a href="about.html" class="nav-link" data-lang="about">👤 关于</a>
+        <a href="settings.html" class="nav-link" data-lang="settings">⚙️ 设置</a>
+    </div>
+
+    <div class="header">
+        <h1 class="main-title" data-lang="archivePageTitle">文章归档</h1>
+        <p class="subtitle" data-lang="archivePageSubtitle">// Archive • Timeline • Statistics</p>
+    </div>
+
+    <div class="archive-controls">
+        <button class="archive-btn active" onclick="showArchiveView('timeline')" id="timelineBtn" data-lang="timelineView">📅 时间线</button>
+        <button class="archive-btn" onclick="showArchiveView('category')" id="categoryBtn" data-lang="categoryView">📁 分类</button>
+        <button class="archive-btn" onclick="showArchiveView('tags')" id="tagsBtn" data-lang="tagsView">🏷️标签</button>
+        <button class="archive-btn" onclick="showArchiveView('stats')" id="statsBtn" data-lang="statsView">📊 统计</button>
+    </div>
+
+    <div class="archive-content" id="archiveContent">
+        <!-- 归档内容将在这里动态加载 -->
+    </div>
+</div>
+
+<script>
+// 浮现文字数组
+const texts = [
+    "✨", "💫", "⚡", "🔥", "💎", "🌟",
+    "CYBER", "TECH", "CODE", "DATA", "FUTURE", "DIGITAL",
+    "ARCHIVE", "TIMELINE", "CATEGORY", "TAGS", "STATS"
+];
+
+const colors = [
+    "#00d4ff", "#ff0080", "#8b5cf6", "#00ff88", "#ff4081", "#40e0d0"
+];
+
+// 创建浮现文字函数
+function createFloatingText(x, y) {
+    const textElement = document.createElement('div');
+    const randomText = texts[Math.floor(Math.random() * texts.length)];
+    const randomColor = colors[Math.floor(Math.random() * colors.length)];
+    textElement.textContent = randomText;
+    textElement.className = 'floating-text';
+    textElement.style.left = x + 'px';
+    textElement.style.top = y + 'px';
+    textElement.style.color = randomColor;
+
+    document.body.appendChild(textElement);
+
+    setTimeout(() => {
+        if (textElement && textElement.parentNode) {
+            textElement.remove();
+        }
+    }, 1500);
+}
+
+// 当前归档视图
+let currentView = 'timeline';
+
+// 页面加载完成后初始化
+document.addEventListener('DOMContentLoaded', function() {
+    // 绑定点击事件
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('button, a, input, select, textarea')) {
+            createFloatingText(e.clientX, e.clientY);
+        }
+    });
+
+    if (typeof createLanguageSwitcher === 'function') {
+        createLanguageSwitcher();
+        updatePageLanguage();
+    }
+    showArchiveView('timeline');
+});
+
+// 空格键触发浮现文字
+document.addEventListener('keydown', function(e) {
+    if (e.key === ' ' && !e.target.closest('input, textarea')) {
+        e.preventDefault();
+        const centerX = window.innerWidth / 2;
+        const centerY = window.innerHeight / 2;
+        createFloatingText(centerX, centerY);
+    }
+});
+
+// 显示不同的归档视图
+function showArchiveView(view) {
+    currentView = view;
+
+    // 更新按钮状态
+    document.querySelectorAll('.archive-btn').forEach(btn => btn.classList.remove('active'));
+    document.getElementById(view + 'Btn').classList.add('active');
+
+    // 显示对应内容
+    switch(view) {
+        case 'timeline':
+            showTimelineView();
+            break;
+        case 'category':
+            showCategoryView();
+            break;
+        case 'tags':
+            showTagsView();
+            break;
+        case 'stats':
+            showStatsView();
+            break;
+    }
+}
+
+// 时间线视图
+function showTimelineView() {
+    const articles = JSON.parse(localStorage.getItem('blog-articles') || '[]')
+        .filter(article => !article.isDraft)
+        .sort((a, b) => new Date(b.createTime) - new Date(a.createTime));
+
+    // 按年月分组
+    const groupedArticles = {};
+    articles.forEach(article => {
+        const date = new Date(article.createTime);
+        const yearMonth = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+        if (!groupedArticles[yearMonth]) {
+            groupedArticles[yearMonth] = [];
+        }
+        groupedArticles[yearMonth].push(article);
+    });
+
+    const archiveContent = document.getElementById('archiveContent');
+
+    if (Object.keys(groupedArticles).length === 0) {
+        // 获取当前语言
+        const currentLang = localStorage.getItem('blog-language') || 'zh';
+        const t = (key) => {
+            return (typeof languages !== 'undefined' && languages[currentLang] && languages[currentLang][key])
+                ? languages[currentLang][key]
+                : key;
+        };
+
+        archiveContent.innerHTML = `
+            <div class="archive-section">
+                <div style="text-align: center; color: var(--text-secondary); padding: 2rem;">
+                    <h3>${t('noArticlesFound')}</h3>
+                    <p>${t('noArticlesDesc')}</p>
+                </div>
+            </div>
+        `;
+        return;
+    }
+
+    // 获取当前语言
+    const currentLang = localStorage.getItem('blog-language') || 'zh';
+    const t = (key) => {
+        return (typeof languages !== 'undefined' && languages[currentLang] && languages[currentLang][key])
+            ? languages[currentLang][key]
+            : key;
+    };
+
+    archiveContent.innerHTML = `
+        <div class="archive-section">
+            <div class="archive-section-title">${t('timelineArchive')}</div>
+            <div class="timeline">
+                ${Object.entries(groupedArticles).map(([yearMonth, articles]) => {
+                    const [year, month] = yearMonth.split('-');
+                    const monthNames = ['一月', '二月', '三月', '四月', '五月', '六月',
+                                      '七月', '八月', '九月', '十月', '十一月', '十二月'];
+                    return `
+                        <div class="timeline-item">
+                            <div class="timeline-date">${year}年 ${monthNames[parseInt(month) - 1]}</div>
+                            <div class="timeline-articles">
+                                ${articles.map((article, index) => {
+                                    const realIndex = JSON.parse(localStorage.getItem('blog-articles') || '[]').indexOf(article);
+                                    const wordCount = article.content.replace(/<[^>]*>/g, '').split(/\s+/).filter(word => word.length > 0).length;
+                                    return `
+                                        <div class="timeline-article" onclick="window.location.href='article.html?index=${realIndex}'">
+                                            <div class="timeline-article-title">${article.title}</div>
+                                            <div class="timeline-article-meta">
+                                                ${new Date(article.createTime).toLocaleDateString()} • ${wordCount} 字
+                                                ${article.category ? ` • 📁 ${getCategoryName(article.category)}` : ''}
+                                            </div>
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
+                        </div>
+                    `;
+                }).join('')}
+            </div>
+        </div>
+    `;
+}
+
+// 分类视图
+function showCategoryView() {
+    const articles = JSON.parse(localStorage.getItem('blog-articles') || '[]')
+        .filter(article => !article.isDraft);
+    const categories = JSON.parse(localStorage.getItem('blog-categories') || '[]');
+
+    // 按分类分组
+    const groupedArticles = {};
+    const uncategorized = [];
+
+    articles.forEach(article => {
+        if (article.category) {
+            if (!groupedArticles[article.category]) {
+                groupedArticles[article.category] = [];
+            }
+            groupedArticles[article.category].push(article);
+        } else {
+            uncategorized.push(article);
+        }
+    });
+
+    const archiveContent = document.getElementById('archiveContent');
+
+    let content = '';
+
+    // 显示有分类的文章
+    categories.forEach(category => {
+        const categoryArticles = groupedArticles[category.id] || [];
+        if (categoryArticles.length > 0) {
+            content += `
+                <div class="archive-section">
+                    <div class="archive-section-title">📁 ${category.name}</div>
+                    ${category.description ? `<p style="color: var(--text-secondary); margin-bottom: 1rem;">${category.description}</p>` : ''}
+                    <div class="archive-list">
+                        ${categoryArticles.map(article => {
+                            const realIndex = JSON.parse(localStorage.getItem('blog-articles') || '[]').indexOf(article);
+                            const wordCount = article.content.replace(/<[^>]*>/g, '').split(/\s+/).filter(word => word.length > 0).length;
+                            return `
+                                <div class="archive-item" onclick="window.location.href='article.html?index=${realIndex}'">
+                                    <div class="archive-item-info">
+                                        <div class="archive-item-title">${article.title}</div>
+                                        <div class="archive-item-meta">
+                                            ${new Date(article.createTime).toLocaleDateString()} • ${wordCount} 字
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                </div>
+            `;
+        }
+    });
+
+    // 显示未分类文章
+    if (uncategorized.length > 0) {
+        content += `
+            <div class="archive-section">
+                <div class="archive-section-title">📂 未分类</div>
+                <div class="archive-list">
+                    ${uncategorized.map(article => {
+                        const realIndex = JSON.parse(localStorage.getItem('blog-articles') || '[]').indexOf(article);
+                        const wordCount = article.content.replace(/<[^>]*>/g, '').split(/\s+/).filter(word => word.length > 0).length;
+                        return `
+                            <div class="archive-item" onclick="window.location.href='article.html?index=${realIndex}'">
+                                <div class="archive-item-info">
+                                    <div class="archive-item-title">${article.title}</div>
+                                    <div class="archive-item-meta">
+                                        ${new Date(article.createTime).toLocaleDateString()} • ${wordCount} 字
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            </div>
+        `;
+    }
+
+    if (!content) {
+        content = `
+            <div class="archive-section">
+                <div style="text-align: center; color: var(--text-secondary); padding: 2rem;">
+                    <h3>暂无文章</h3>
+                    <p>开始创建您的第一篇文章吧！</p>
+                </div>
+            </div>
+        `;
+    }
+
+    archiveContent.innerHTML = content;
+}
+
+// 标签视图
+function showTagsView() {
+    const articles = JSON.parse(localStorage.getItem('blog-articles') || '[]')
+        .filter(article => !article.isDraft);
+
+    // 收集所有标签及其文章
+    const tagMap = {};
+    articles.forEach(article => {
+        if (article.tags && article.tags.length > 0) {
+            article.tags.forEach(tag => {
+                if (!tagMap[tag]) {
+                    tagMap[tag] = [];
+                }
+                tagMap[tag].push(article);
+            });
+        }
+    });
+
+    // 按文章数量排序标签
+    const sortedTags = Object.entries(tagMap).sort((a, b) => b[1].length - a[1].length);
+
+    const archiveContent = document.getElementById('archiveContent');
+
+    // 获取当前语言
+    const currentLang = localStorage.getItem('blog-language') || 'zh';
+    const t = (key) => {
+        return (typeof languages !== 'undefined' && languages[currentLang] && languages[currentLang][key])
+            ? languages[currentLang][key]
+            : key;
+    };
+
+    if (sortedTags.length === 0) {
+        archiveContent.innerHTML = `
+            <div class="archive-section">
+                <div style="text-align: center; color: var(--text-secondary); padding: 2rem;">
+                    <h3>${t('noTagsFound')}</h3>
+                    <p>${t('noTagsDesc')}</p>
+                </div>
+            </div>
+        `;
+        return;
+    }
+
+    archiveContent.innerHTML = `
+        <div class="archive-section">
+            <div class="archive-section-title">${t('tagsArchive')}</div>
+            <div class="archive-list">
+                ${sortedTags.map(([tag, tagArticles]) => `
+                    <div class="archive-item" onclick="showTagArticles('${tag}')">
+                        <div class="archive-item-info">
+                            <div class="archive-item-title">#${tag}</div>
+                            <div class="archive-item-meta">
+                                ${tagArticles.length} ${t('articlesCount')}
+                            </div>
+                        </div>
+                        <div class="archive-item-count">${tagArticles.length}</div>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+        <div class="archive-section" id="tagArticlesSection" style="display: none;">
+            <div class="archive-section-title" id="tagArticlesTitle"></div>
+            <div class="archive-list" id="tagArticlesList"></div>
+        </div>
+    `;
+}
+
+// 显示特定标签的文章
+function showTagArticles(tag) {
+    const articles = JSON.parse(localStorage.getItem('blog-articles') || '[]')
+        .filter(article => !article.isDraft && article.tags && article.tags.includes(tag))
+        .sort((a, b) => new Date(b.createTime) - new Date(a.createTime));
+
+    const tagArticlesSection = document.getElementById('tagArticlesSection');
+    const tagArticlesTitle = document.getElementById('tagArticlesTitle');
+    const tagArticlesList = document.getElementById('tagArticlesList');
+
+    tagArticlesTitle.textContent = `🏷️ 标签: #${tag}`;
+    tagArticlesList.innerHTML = articles.map(article => {
+        const realIndex = JSON.parse(localStorage.getItem('blog-articles') || '[]').indexOf(article);
+        const wordCount = article.content.replace(/<[^>]*>/g, '').split(/\s+/).filter(word => word.length > 0).length;
+        return `
+            <div class="archive-item" onclick="window.location.href='article.html?index=${realIndex}'">
+                <div class="archive-item-info">
+                    <div class="archive-item-title">${article.title}</div>
+                    <div class="archive-item-meta">
+                        ${new Date(article.createTime).toLocaleDateString()} • ${wordCount} 字
+                        ${article.category ? ` • 📁 ${getCategoryName(article.category)}` : ''}
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    tagArticlesSection.style.display = 'block';
+    tagArticlesSection.scrollIntoView({ behavior: 'smooth' });
+}
+
+// 统计视图
+function showStatsView() {
+    const articles = JSON.parse(localStorage.getItem('blog-articles') || '[]')
+        .filter(article => !article.isDraft);
+    const categories = JSON.parse(localStorage.getItem('blog-categories') || '[]');
+
+    // 计算统计数据
+    const totalArticles = articles.length;
+    const totalWords = articles.reduce((sum, article) => {
+        return sum + article.content.replace(/<[^>]*>/g, '').split(/\s+/).filter(word => word.length > 0).length;
+    }, 0);
+    const avgWords = totalArticles > 0 ? Math.round(totalWords / totalArticles) : 0;
+
+    // 收集所有标签
+    const allTags = new Set();
+    articles.forEach(article => {
+        if (article.tags) {
+            article.tags.forEach(tag => allTags.add(tag));
+        }
+    });
+
+    // 按年份统计
+    const yearStats = {};
+    articles.forEach(article => {
+        const year = new Date(article.createTime).getFullYear();
+        yearStats[year] = (yearStats[year] || 0) + 1;
+    });
+
+    // 按分类统计
+    const categoryStats = {};
+    articles.forEach(article => {
+        if (article.category) {
+            const categoryName = getCategoryName(article.category);
+            categoryStats[categoryName] = (categoryStats[categoryName] || 0) + 1;
+        } else {
+            categoryStats['未分类'] = (categoryStats['未分类'] || 0) + 1;
+        }
+    });
+
+    // 获取当前语言
+    const currentLang = localStorage.getItem('blog-language') || 'zh';
+    const t = (key) => {
+        return (typeof languages !== 'undefined' && languages[currentLang] && languages[currentLang][key])
+            ? languages[currentLang][key]
+            : key;
+    };
+
+    const archiveContent = document.getElementById('archiveContent');
+    archiveContent.innerHTML = `
+        <div class="archive-section">
+            <div class="archive-section-title">${t('blogStatistics')}</div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">${totalArticles}</div>
+                    <div class="stat-label">${t('totalArticles')}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${totalWords.toLocaleString()}</div>
+                    <div class="stat-label">${t('totalWords')}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${avgWords}</div>
+                    <div class="stat-label">${t('averageWords')}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${allTags.size}</div>
+                    <div class="stat-label">${t('totalTags')}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${categories.length}</div>
+                    <div class="stat-label">${t('totalCategories')}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${Object.keys(yearStats).length}</div>
+                    <div class="stat-label">活跃年份</div>
+                </div>
+            </div>
+        </div>
+
+        ${Object.keys(yearStats).length > 0 ? `
+        <div class="archive-section">
+            <div class="archive-section-title">${t('yearlyStats')}</div>
+            <div class="archive-list">
+                ${Object.entries(yearStats)
+                    .sort((a, b) => b[0] - a[0])
+                    .map(([year, count]) => `
+                    <div class="archive-item">
+                        <div class="archive-item-info">
+                            <div class="archive-item-title">${year}年</div>
+                            <div class="archive-item-meta">${count} ${t('articlesCount')}</div>
+                        </div>
+                        <div class="archive-item-count">${count}</div>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+        ` : ''}
+
+        ${Object.keys(categoryStats).length > 0 ? `
+        <div class="archive-section">
+            <div class="archive-section-title">${t('categoryStats')}</div>
+            <div class="archive-list">
+                ${Object.entries(categoryStats)
+                    .sort((a, b) => b[1] - a[1])
+                    .map(([category, count]) => `
+                    <div class="archive-item">
+                        <div class="archive-item-info">
+                            <div class="archive-item-title">${category}</div>
+                            <div class="archive-item-meta">${count} ${t('articlesCount')}</div>
+                        </div>
+                        <div class="archive-item-count">${count}</div>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+        ` : ''}
+    `;
+}
+
+// 获取分类名称
+function getCategoryName(categoryId) {
+    if (!categoryId) return '';
+    const categories = JSON.parse(localStorage.getItem('blog-categories') || '[]');
+    const category = categories.find(cat => cat.id === categoryId);
+    return category ? category.name : '';
+}
+</script>
+</body>
+</html>

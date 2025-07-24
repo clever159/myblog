@@ -1,0 +1,1500 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cyber Article</title>
+<script src="lang.js"></script>
+<script src="article-manager.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600&display=swap');
+
+:root {
+    --primary-cyan: #00d4ff;
+    --primary-magenta: #ff0080;
+    --accent-purple: #8b5cf6;
+    --bg-dark: #0a0a0f;
+    --bg-card: rgba(15, 15, 25, 0.8);
+    --text-primary: #ffffff;
+    --text-secondary: #a1a1aa;
+    --border-glow: rgba(0, 212, 255, 0.3);
+    --shadow-glow: 0 0 20px rgba(0, 212, 255, 0.1);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, var(--bg-dark) 0%, #0f0f1a 50%, #1a0f2e 100%);
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 20% 80%, rgba(0, 212, 255, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 0, 128, 0.05) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* Navigation */
+.nav-container {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    padding: 1rem;
+}
+
+.nav-link {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.nav-link:hover {
+    color: var(--primary-cyan);
+    background: rgba(0, 212, 255, 0.1);
+}
+
+/* Article Container */
+#articleContainer {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+    background: var(--bg-card);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    backdrop-filter: blur(20px);
+    box-shadow: var(--shadow-glow);
+}
+
+/* Article Header */
+.article-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.article-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, var(--primary-cyan), var(--primary-magenta));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    line-height: 1.2;
+}
+
+.article-meta {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+/* Article Content */
+.article-content {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    margin-bottom: 3rem;
+}
+
+.article-content h1, .article-content h2, .article-content h3 {
+    color: var(--primary-cyan);
+    margin: 2rem 0 1rem 0;
+    font-weight: 600;
+}
+
+.article-content p {
+    margin-bottom: 1.5rem;
+    color: var(--text-primary);
+}
+
+.article-content strong {
+    color: var(--primary-magenta);
+    font-weight: 600;
+}
+
+.article-content em {
+    color: var(--accent-purple);
+}
+
+.article-content code {
+    background: rgba(0, 212, 255, 0.1);
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9em;
+    color: var(--primary-cyan);
+}
+
+/* Tags */
+.article-tags {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tag {
+    display: inline-block;
+    background: rgba(0, 212, 255, 0.1);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    padding: 0.3rem 0.8rem;
+    margin: 0.2rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    color: var(--primary-cyan);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.tag:hover {
+    background: rgba(0, 212, 255, 0.2);
+    border-color: var(--primary-cyan);
+}
+
+/* Related Articles */
+#relatedArticles {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+#relatedArticles h3 {
+    color: var(--primary-magenta);
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+
+.related-item {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.related-item:hover {
+    border-color: var(--primary-cyan);
+    background: rgba(0, 212, 255, 0.05);
+    transform: translateY(-2px);
+}
+
+.related-item-title {
+    color: var(--text-primary);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.related-item-tags {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+/* Buttons */
+.nav-buttons {
+    margin-top: 3rem;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+button {
+    background: rgba(0, 212, 255, 0.1);
+    color: var(--primary-cyan);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+button:hover {
+    background: rgba(0, 212, 255, 0.2);
+    border-color: var(--primary-cyan);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 212, 255, 0.2);
+}
+
+/* Progress Bar */
+#readingProgress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 2px;
+    background: linear-gradient(90deg, var(--primary-cyan), var(--primary-magenta));
+    z-index: 1000;
+    transition: width 0.3s ease;
+}
+
+/* Floating Text Animation */
+.floating-text {
+    position: fixed;
+    font-size: 1.2rem;
+    font-weight: 600;
+    pointer-events: none;
+    user-select: none;
+    white-space: nowrap;
+    animation: float-up 1.5s forwards;
+    z-index: 10000;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+@keyframes float-up {
+    0% {
+        opacity: 1;
+        transform: translate3d(0, 0, 0) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translate3d(0, -60px, 0) scale(1.2);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    #articleContainer {
+        margin: 1rem;
+        padding: 1.5rem;
+    }
+    
+    .article-title {
+        font-size: 2rem;
+    }
+    
+    .nav-buttons {
+        gap: 0.5rem;
+    }
+    
+    button {
+        padding: 0.6rem 1rem;
+        font-size: 0.9rem;
+    }
+}
+
+/* 评论系统样式 */
+.comments-section {
+    margin-top: 3rem;
+    padding: 2rem;
+    background: rgba(15, 15, 25, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+}
+
+.comments-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.comments-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--primary-cyan);
+    margin: 0;
+}
+
+.comments-count {
+    background: rgba(0, 212, 255, 0.2);
+    color: var(--primary-cyan);
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.comment-form {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+}
+
+.comment-form-header {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.comment-input {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    padding: 0.8rem;
+    color: var(--text-primary);
+    font-family: 'Inter', sans-serif;
+    transition: all 0.3s ease;
+}
+
+.comment-input:focus {
+    outline: none;
+    border-color: var(--primary-cyan);
+    box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.2);
+}
+
+.comment-textarea {
+    width: 100%;
+    min-height: 100px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    padding: 1rem;
+    color: var(--text-primary);
+    font-family: 'Inter', sans-serif;
+    resize: vertical;
+    transition: all 0.3s ease;
+    margin-bottom: 1rem;
+}
+
+.comment-textarea:focus {
+    outline: none;
+    border-color: var(--primary-cyan);
+    box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.2);
+}
+
+.comment-form-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.comment-submit-btn {
+    background: linear-gradient(135deg, var(--primary-cyan), var(--primary-magenta));
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.comment-submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);
+}
+
+.comment-char-count {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.comments-list {
+    margin-top: 2rem;
+}
+
+.comment-item {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+}
+
+.comment-item:hover {
+    border-color: rgba(0, 212, 255, 0.3);
+}
+
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.comment-author {
+    font-weight: 600;
+    color: var(--primary-cyan);
+}
+
+.comment-time {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.comment-content {
+    color: var(--text-primary);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+
+.comment-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.comment-action-btn {
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: all 0.3s ease;
+}
+
+.comment-action-btn:hover {
+    color: var(--primary-cyan);
+    border-color: var(--primary-cyan);
+}
+
+.comment-action-btn.liked {
+    color: var(--primary-magenta);
+    border-color: var(--primary-magenta);
+}
+
+.comment-replies {
+    margin-top: 1rem;
+    margin-left: 2rem;
+    border-left: 2px solid rgba(0, 212, 255, 0.2);
+    padding-left: 1rem;
+}
+
+.reply-form {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 6px;
+    display: none;
+}
+
+.reply-form.active {
+    display: block;
+}
+
+/* 分享菜单样式 */
+.share-container {
+    position: relative;
+    display: inline-block;
+}
+
+.share-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: var(--bg-card);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 1rem;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    min-width: 200px;
+    display: none;
+    animation: slideDown 0.3s ease-out;
+}
+
+.share-menu.active {
+    display: block;
+}
+
+.share-menu-header {
+    color: var(--primary-cyan);
+    font-weight: 600;
+    margin-bottom: 1rem;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.share-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+}
+
+.share-option {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.8rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.85rem;
+    text-decoration: none;
+}
+
+.share-option:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--primary-cyan);
+    transform: translateY(-2px);
+}
+
+.share-icon {
+    font-size: 1.2rem;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 768px) {
+    .comment-form-header {
+        grid-template-columns: 1fr;
+    }
+
+    .comment-form-actions {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: stretch;
+    }
+
+    .comment-replies {
+        margin-left: 1rem;
+    }
+
+    .share-menu {
+        right: -50px;
+        min-width: 250px;
+    }
+
+    .share-options {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+</head>
+<body>
+<div class="nav-container">
+    <a href="index.html" class="nav-link" data-lang="home">🏠 首页</a>
+    <a href="editor.html" class="nav-link" data-lang="newPost">✍️ 新文章</a>
+    <a href="archive.html" class="nav-link" data-lang="archive">📚 归档</a>
+    <a href="about.html" class="nav-link" data-lang="about">👤 关于</a>
+    <a href="settings.html" class="nav-link" data-lang="settings">⚙️ 设置</a>
+</div>
+
+<div id="articleContainer">
+    <div class="article-header">
+        <h1 class="article-title" id="articleTitle">Loading...</h1>
+        <div class="article-meta" id="articleMeta">
+            <span id="createTime"></span> • <span id="wordCount"></span> words • <span id="readTime"></span> min read
+        </div>
+    </div>
+    
+    <div class="article-content" id="articleContent">
+        Loading article content...
+    </div>
+    
+    <div class="article-tags" id="articleTags"></div>
+
+    <!-- 评论系统 -->
+    <div class="comments-section" id="commentsSection">
+        <div class="comments-header">
+            <h3 class="comments-title" data-lang="comments">💬 评论</h3>
+            <span class="comments-count" id="commentsCount">0</span>
+        </div>
+
+        <!-- 评论表单 -->
+        <div class="comment-form">
+            <div class="comment-form-header">
+                <input type="text" id="commentAuthor" placeholder="昵称 (可选)" class="comment-input" data-lang="commentAuthorPlaceholder">
+                <input type="email" id="commentEmail" placeholder="邮箱 (可选)" class="comment-input" data-lang="commentEmailPlaceholder">
+            </div>
+            <textarea id="commentContent" placeholder="写下你的想法..." class="comment-textarea" data-lang="commentContentPlaceholder"></textarea>
+            <div class="comment-form-actions">
+                <button onclick="submitComment()" class="comment-submit-btn" data-lang="submitComment">💬 发表评论</button>
+                <span class="comment-char-count" id="commentCharCount">0/500</span>
+            </div>
+        </div>
+
+        <!-- 评论列表 -->
+        <div class="comments-list" id="commentsList">
+            <!-- 评论将在这里动态加载 -->
+        </div>
+    </div>
+
+    <div id="relatedArticles">
+        <h3>🔗 Related Articles</h3>
+        <div id="relatedList"></div>
+    </div>
+
+    <div class="nav-buttons">
+        <button onclick="goBack()" data-tooltip="backTooltip">← 返回</button>
+        <button onclick="editArticle()" data-tooltip="editArticleTooltip">编辑</button>
+        <button onclick="exportArticle()" data-tooltip="exportArticleTooltip">导出</button>
+        <div class="share-container">
+            <button onclick="toggleShareMenu()" data-tooltip="shareTooltip" id="shareBtn">分享 ▼</button>
+            <div class="share-menu" id="shareMenu">
+                <div class="share-menu-header">分享到</div>
+                <div class="share-options">
+                    <button class="share-option" onclick="shareToWeibo()" data-tooltip="shareWeiboTooltip">
+                        <span class="share-icon">🔴</span>
+                        <span>微博</span>
+                    </button>
+                    <button class="share-option" onclick="shareToWechat()" data-tooltip="shareWechatTooltip">
+                        <span class="share-icon">💚</span>
+                        <span>微信</span>
+                    </button>
+                    <button class="share-option" onclick="shareToQQ()" data-tooltip="shareQQTooltip">
+                        <span class="share-icon">🔵</span>
+                        <span>QQ</span>
+                    </button>
+                    <button class="share-option" onclick="shareToTwitter()" data-tooltip="shareTwitterTooltip">
+                        <span class="share-icon">🐦</span>
+                        <span>Twitter</span>
+                    </button>
+                    <button class="share-option" onclick="shareToFacebook()" data-tooltip="shareFacebookTooltip">
+                        <span class="share-icon">📘</span>
+                        <span>Facebook</span>
+                    </button>
+                    <button class="share-option" onclick="shareToLinkedIn()" data-tooltip="shareLinkedInTooltip">
+                        <span class="share-icon">💼</span>
+                        <span>LinkedIn</span>
+                    </button>
+                    <button class="share-option" onclick="copyShareLink()" data-tooltip="copyLinkTooltip">
+                        <span class="share-icon">🔗</span>
+                        <span>复制链接</span>
+                    </button>
+                    <button class="share-option" onclick="shareViaEmail()" data-tooltip="shareEmailTooltip">
+                        <span class="share-icon">📧</span>
+                        <span>邮件</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <button onclick="adjustFontSize(2)" data-tooltip="fontSizePlusTooltip">A+</button>
+        <button onclick="adjustFontSize(-2)" data-tooltip="fontSizeMinusTooltip">A-</button>
+    </div>
+</div>
+
+<script>
+// 获取文章索引
+const urlParams = new URLSearchParams(window.location.search);
+const index = parseInt(urlParams.get('index'));
+
+// 浮现文字数组 - 简化版
+const texts = [
+    "✨", "💫", "⚡", "🔥", "💎", "🌟",
+    "CYBER", "TECH", "CODE", "DATA", "FUTURE", "DIGITAL"
+];
+
+const colors = [
+    "#00d4ff", "#ff0080", "#8b5cf6", "#00ff88", "#ff4081", "#40e0d0"
+];
+
+// 创建浮现文字函数
+function createFloatingText(x, y) {
+    const textElement = document.createElement('div');
+    const randomText = texts[Math.floor(Math.random() * texts.length)];
+    const randomColor = colors[Math.floor(Math.random() * colors.length)];
+    textElement.textContent = randomText;
+    textElement.className = 'floating-text';
+    textElement.style.left = x + 'px';
+    textElement.style.top = y + 'px';
+    textElement.style.color = randomColor;
+    
+    document.body.appendChild(textElement);
+    
+    setTimeout(() => {
+        if (textElement && textElement.parentNode) {
+            textElement.remove();
+        }
+    }, 1500);
+}
+
+// 文章相关函数
+function editArticle() {
+    window.location.href = `editor.html?index=${index}`;
+}
+
+function goBack() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const tagParam = urlParams.get('tag');
+    if (tagParam) {
+        window.location.href = `index.html?tag=${encodeURIComponent(tagParam)}`;
+    } else {
+        window.location.href = 'index.html';
+    }
+}
+
+function exportArticle() {
+    const articles = JSON.parse(localStorage.getItem('blog-articles') || '[]');
+    if (articles[index]) {
+        const article = articles[index];
+        const content = `# ${article.title}\n\n${article.content.replace(/<[^>]*>/g, '')}\n\nTags: ${(article.tags || []).join(', ')}\nCreated: ${article.createTime || 'Unknown'}`;
+        const blob = new Blob([content], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${article.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.txt`;
+        a.click();
+        URL.revokeObjectURL(url);
+        alert('✅ 文章导出成功！');
+    }
+}
+
+// 分享菜单功能
+function toggleShareMenu() {
+    const shareMenu = document.getElementById('shareMenu');
+    const shareBtn = document.getElementById('shareBtn');
+
+    shareMenu.classList.toggle('active');
+
+    if (shareMenu.classList.contains('active')) {
+        shareBtn.textContent = '分享 ▲';
+        // 点击外部关闭菜单
+        document.addEventListener('click', closeShareMenuOnClickOutside);
+    } else {
+        shareBtn.textContent = '分享 ▼';
+        document.removeEventListener('click', closeShareMenuOnClickOutside);
+    }
+}
+
+function closeShareMenuOnClickOutside(event) {
+    const shareContainer = event.target.closest('.share-container');
+    if (!shareContainer) {
+        const shareMenu = document.getElementById('shareMenu');
+        const shareBtn = document.getElementById('shareBtn');
+        shareMenu.classList.remove('active');
+        shareBtn.textContent = '分享 ▼';
+        document.removeEventListener('click', closeShareMenuOnClickOutside);
+    }
+}
+
+function getArticleShareData() {
+    const articles = JSON.parse(localStorage.getItem('blog-articles') || '[]');
+    if (articles[index]) {
+        const article = articles[index];
+        return {
+            title: article.title,
+            url: window.location.href,
+            text: article.content.replace(/<[^>]*>/g, '').substring(0, 100) + '...'
+        };
+    }
+    return null;
+}
+
+// 分享到微博
+function shareToWeibo() {
+    const data = getArticleShareData();
+    if (data) {
+        const shareUrl = `https://service.weibo.com/share/share.php?url=${encodeURIComponent(data.url)}&title=${encodeURIComponent(data.title + ' - ' + data.text)}`;
+        window.open(shareUrl, '_blank', 'width=600,height=400');
+        toggleShareMenu();
+    }
+}
+
+// 分享到微信（显示二维码）
+function shareToWechat() {
+    const data = getArticleShareData();
+    if (data) {
+        // 由于微信不支持直接分享，我们显示一个提示
+        showShareModal('微信分享', `
+            <div style="text-align: center;">
+                <p style="margin-bottom: 1rem;">请复制链接到微信分享：</p>
+                <input type="text" value="${data.url}" readonly style="width: 100%; padding: 0.5rem; margin-bottom: 1rem; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; color: white;">
+                <button onclick="copyToClipboard('${data.url}')" style="background: var(--primary-cyan); color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer;">复制链接</button>
+            </div>
+        `);
+        toggleShareMenu();
+    }
+}
+
+// 分享到QQ
+function shareToQQ() {
+    const data = getArticleShareData();
+    if (data) {
+        const shareUrl = `https://connect.qq.com/widget/shareqq/index.html?url=${encodeURIComponent(data.url)}&title=${encodeURIComponent(data.title)}&summary=${encodeURIComponent(data.text)}`;
+        window.open(shareUrl, '_blank', 'width=600,height=400');
+        toggleShareMenu();
+    }
+}
+
+// 分享到Twitter
+function shareToTwitter() {
+    const data = getArticleShareData();
+    if (data) {
+        const shareUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(data.url)}&text=${encodeURIComponent(data.title + ' - ' + data.text)}`;
+        window.open(shareUrl, '_blank', 'width=600,height=400');
+        toggleShareMenu();
+    }
+}
+
+// 分享到Facebook
+function shareToFacebook() {
+    const data = getArticleShareData();
+    if (data) {
+        const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(data.url)}`;
+        window.open(shareUrl, '_blank', 'width=600,height=400');
+        toggleShareMenu();
+    }
+}
+
+// 分享到LinkedIn
+function shareToLinkedIn() {
+    const data = getArticleShareData();
+    if (data) {
+        const shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(data.url)}`;
+        window.open(shareUrl, '_blank', 'width=600,height=400');
+        toggleShareMenu();
+    }
+}
+
+// 复制分享链接
+function copyShareLink() {
+    const data = getArticleShareData();
+    if (data) {
+        copyToClipboard(data.url);
+        toggleShareMenu();
+    }
+}
+
+// 邮件分享
+function shareViaEmail() {
+    const data = getArticleShareData();
+    if (data) {
+        const subject = encodeURIComponent(`推荐文章：${data.title}`);
+        const body = encodeURIComponent(`我想与你分享这篇文章：\n\n${data.title}\n\n${data.text}\n\n阅读全文：${data.url}`);
+        const mailtoUrl = `mailto:?subject=${subject}&body=${body}`;
+        window.location.href = mailtoUrl;
+        toggleShareMenu();
+    }
+}
+
+// 复制到剪贴板
+function copyToClipboard(text) {
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(() => {
+            showFloatingMessage('✅ 链接已复制到剪贴板！', 'success');
+        }).catch(() => {
+            fallbackCopyToClipboard(text);
+        });
+    } else {
+        fallbackCopyToClipboard(text);
+    }
+}
+
+function fallbackCopyToClipboard(text) {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.position = 'fixed';
+    textArea.style.left = '-999999px';
+    textArea.style.top = '-999999px';
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+
+    try {
+        document.execCommand('copy');
+        showFloatingMessage('✅ 链接已复制到剪贴板！', 'success');
+    } catch (err) {
+        prompt('请手动复制以下链接：', text);
+    }
+
+    document.body.removeChild(textArea);
+}
+
+// 显示分享模态框
+function showShareModal(title, content) {
+    const modal = document.createElement('div');
+    modal.className = 'share-modal';
+    modal.innerHTML = `
+        <div class="share-modal-content">
+            <div class="share-modal-header">
+                <h3>${title}</h3>
+                <button class="close-btn" onclick="closeShareModal()">&times;</button>
+            </div>
+            <div class="share-modal-body">
+                ${content}
+            </div>
+        </div>
+    `;
+
+    modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 10000;
+        backdrop-filter: blur(5px);
+    `;
+
+    const modalContent = modal.querySelector('.share-modal-content');
+    modalContent.style.cssText = `
+        background: var(--bg-card);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        width: 90%;
+        max-width: 400px;
+        backdrop-filter: blur(20px);
+    `;
+
+    const modalHeader = modal.querySelector('.share-modal-header');
+    modalHeader.style.cssText = `
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.5rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    `;
+
+    const modalBody = modal.querySelector('.share-modal-body');
+    modalBody.style.cssText = `
+        padding: 1.5rem;
+    `;
+
+    const closeBtn = modal.querySelector('.close-btn');
+    closeBtn.style.cssText = `
+        background: none;
+        border: none;
+        color: var(--text-secondary);
+        font-size: 1.5rem;
+        cursor: pointer;
+        padding: 0.5rem;
+        border-radius: 4px;
+        transition: all 0.3s ease;
+    `;
+
+    document.body.appendChild(modal);
+
+    // 点击外部关闭
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            closeShareModal();
+        }
+    });
+}
+
+function closeShareModal() {
+    const modal = document.querySelector('.share-modal');
+    if (modal) {
+        modal.remove();
+    }
+}
+
+function showShareSuccess(message) {
+    alert(message);
+}
+
+function showShareDialog(shareText) {
+    prompt('请复制以下链接:', shareText);
+}
+
+function searchByTag(tag) {
+    window.location.href = `index.html?tag=${encodeURIComponent(tag)}`;
+}
+
+function loadRelatedArticles(currentArticle) {
+    const articles = JSON.parse(localStorage.getItem('blog-articles') || '[]');
+    const relatedList = document.getElementById('relatedList');
+
+    if (!relatedList) return;
+
+    // 找到相关文章（基于标签匹配）
+    const related = articles.filter((article, idx) => {
+        if (idx === index || article.isDraft) return false;
+
+        // 检查是否有共同标签
+        if (currentArticle.tags && article.tags) {
+            return currentArticle.tags.some(tag => article.tags.includes(tag));
+        }
+        return false;
+    }).slice(0, 3); // 最多显示3篇相关文章
+
+    if (related.length === 0) {
+        // 如果没有基于标签的相关文章，显示最新的3篇文章
+        const latest = articles.filter((article, idx) =>
+            idx !== index && !article.isDraft
+        ).sort((a, b) => new Date(b.createTime || 0) - new Date(a.createTime || 0)).slice(0, 3);
+
+        if (latest.length === 0) {
+            const noRelatedMessage = typeof t === 'function' ? t('noRelatedArticles') : '暂无相关文章';
+            relatedList.innerHTML = `<p style="color: var(--text-secondary); text-align: center; padding: 1rem;">${noRelatedMessage}</p>`;
+            return;
+        }
+
+        relatedList.innerHTML = latest.map((article, idx) => {
+            const realIndex = articles.indexOf(article);
+            return `
+                <div class="related-item" onclick="window.location.href='article.html?index=${realIndex}'" title="点击查看文章">
+                    <div class="related-item-title">${article.title}</div>
+                    <div class="related-item-tags">
+                        ${new Date(article.createTime).toLocaleDateString()} •
+                        ${article.tags ? article.tags.map(tag => '#' + tag).join(' ') : '无标签'}
+                    </div>
+                </div>
+            `;
+        }).join('');
+    } else {
+        relatedList.innerHTML = related.map(article => {
+            const realIndex = articles.indexOf(article);
+            return `
+                <div class="related-item" onclick="window.location.href='article.html?index=${realIndex}'" title="点击查看文章">
+                    <div class="related-item-title">${article.title}</div>
+                    <div class="related-item-tags">
+                        ${new Date(article.createTime).toLocaleDateString()} •
+                        ${article.tags ? article.tags.map(tag => '#' + tag).join(' ') : '无标签'}
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+}
+
+async function loadArticle() {
+    try {
+        let article = null;
+
+        // 尝试使用文章管理器加载
+        if (window.articleManager) {
+            await window.articleManager.init();
+            article = await window.articleManager.loadArticleByIndex(index);
+        }
+
+        // 后备方案：使用localStorage
+        if (!article) {
+            const articles = JSON.parse(localStorage.getItem('blog-articles') || '[]');
+            article = articles[index];
+        }
+
+        if (article) {
+            // 设置文章标题
+            document.getElementById('articleTitle').textContent = article.title;
+
+            // 设置文章内容
+            document.getElementById('articleContent').innerHTML = article.content;
+
+            // 设置创建时间
+            document.getElementById('createTime').textContent = new Date(article.createTime).toLocaleDateString();
+
+            // 计算字数和阅读时间
+            const wordCount = article.wordCount || article.content.replace(/<[^>]*>/g, '').split(/\s+/).filter(word => word.length > 0).length;
+            const readTime = article.readTime || Math.max(1, Math.ceil(wordCount / 200));
+            document.getElementById('wordCount').textContent = wordCount;
+            document.getElementById('readTime').textContent = readTime;
+
+            // 显示标签
+            const tagsContainer = document.getElementById('articleTags');
+            if (article.tags && article.tags.length > 0) {
+                tagsContainer.innerHTML = article.tags.map(tag =>
+                    `<span class="tag" onclick="searchByTag('${tag}')" title="点击搜索此标签">#${tag}</span>`
+                ).join('');
+            } else {
+                const noTagsMessage = typeof t === 'function' ? t('noTags') : '暂无标签';
+                tagsContainer.innerHTML = `<p style="color: var(--text-secondary); font-size: 0.9rem;">${noTagsMessage}</p>`;
+            }
+
+            // 加载相关文章
+            loadRelatedArticles(article);
+
+            // 记录阅读历史
+            recordReadHistory(index);
+
+            // 更新页面标题
+            document.title = `${article.title} - Cyber Blog`;
+
+            // 加载评论
+            loadComments();
+
+        } else {
+            const notFoundTitle = typeof t === 'function' ? t('articleNotFound') : '文章未找到';
+            const notFoundDesc = typeof t === 'function' ? t('articleNotFoundDesc') : '抱歉，找不到这篇文章。可能已被删除或索引错误。';
+            document.getElementById('articleTitle').textContent = notFoundTitle;
+            document.getElementById('articleContent').innerHTML = `<p style="color: var(--text-secondary); text-align: center; padding: 2rem;">${notFoundDesc}</p>`;
+            document.getElementById('articleMeta').style.display = 'none';
+            document.getElementById('articleTags').style.display = 'none';
+            document.getElementById('relatedArticles').style.display = 'none';
+        }
+    } catch (error) {
+        console.error('加载文章失败:', error);
+        const errorTitle = '加载失败';
+        const errorDesc = '文章加载失败，请稍后重试。';
+        document.getElementById('articleTitle').textContent = errorTitle;
+        document.getElementById('articleContent').innerHTML = `<p style="color: var(--text-secondary); text-align: center; padding: 2rem;">${errorDesc}</p>`;
+    }
+}
+
+// 调试函数 - 检查数据
+function debugArticleData() {
+    console.log('当前文章索引:', index);
+    const articles = JSON.parse(localStorage.getItem('blog-articles') || '[]');
+    console.log('所有文章:', articles);
+    console.log('当前文章:', articles[index]);
+    console.log('文章总数:', articles.length);
+}
+
+// 检查索引有效性并输出调试信息
+if (isNaN(index) || index < 0) {
+    console.error('无效的文章索引:', index);
+    debugArticleData();
+    // 显示错误信息
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('articleTitle').textContent = '文章未找到';
+        document.getElementById('articleContent').innerHTML = '<p style="color: var(--text-secondary); text-align: center; padding: 2rem;">无效的文章索引，请检查URL参数。</p>';
+    });
+} else {
+    console.log('正在加载文章，索引:', index);
+    debugArticleData();
+}
+
+function recordReadHistory(articleIndex) {
+    let history = JSON.parse(localStorage.getItem('blog-read-history') || '[]');
+    const now = new Date().toISOString();
+    history = history.filter(item => item.index !== articleIndex);
+    history.unshift({ index: articleIndex, readTime: now });
+    history = history.slice(0, 50);
+    localStorage.setItem('blog-read-history', JSON.stringify(history));
+}
+
+function createProgressBar() {
+    const progressBar = document.createElement('div');
+    progressBar.id = 'readingProgress';
+    document.body.appendChild(progressBar);
+}
+
+function updateReadingProgress() {
+    const scrollTop = window.pageYOffset;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const scrollPercent = (scrollTop / docHeight) * 100;
+    
+    const progressBar = document.getElementById('readingProgress');
+    if (progressBar) {
+        progressBar.style.width = scrollPercent + '%';
+    }
+}
+
+function adjustFontSize(change) {
+    const content = document.getElementById('articleContent');
+    const currentSize = parseFloat(window.getComputedStyle(content).fontSize);
+    const newSize = currentSize + change;
+    
+    if (newSize >= 12 && newSize <= 24) {
+        content.style.fontSize = newSize + 'px';
+        localStorage.setItem('article-font-size', newSize);
+    }
+}
+
+// 事件监听
+document.addEventListener('DOMContentLoaded', function() {
+    // 绑定点击事件
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('button, a, input, select, textarea')) {
+            createFloatingText(e.clientX, e.clientY);
+        }
+    });
+    
+    // 初始化语言切换
+    if (typeof createLanguageSwitcher === 'function') {
+        createLanguageSwitcher();
+        updatePageLanguage();
+    }
+    
+    loadArticle();
+    createProgressBar();
+    
+    // 恢复字体大小设置
+    const savedFontSize = localStorage.getItem('article-font-size');
+    if (savedFontSize) {
+        const articleContent = document.getElementById('articleContent');
+        if (articleContent) {
+            articleContent.style.fontSize = savedFontSize + 'px';
+        }
+    }
+});
+
+// 键盘快捷键
+document.addEventListener('keydown', function(e) {
+    if (e.key === ' ' && !e.target.closest('input, textarea')) {
+        e.preventDefault();
+        const centerX = window.innerWidth / 2;
+        const centerY = window.innerHeight / 2;
+        createFloatingText(centerX, centerY);
+    }
+});
+
+// 滚动进度条
+window.addEventListener('scroll', updateReadingProgress);
+
+// 评论系统功能
+function loadComments() {
+    const comments = JSON.parse(localStorage.getItem(`blog-comments-${index}`) || '[]');
+    const commentsList = document.getElementById('commentsList');
+    const commentsCount = document.getElementById('commentsCount');
+
+    commentsCount.textContent = comments.length;
+
+    if (comments.length === 0) {
+        commentsList.innerHTML = `
+            <div class="empty-comments">
+                <p style="text-align: center; color: var(--text-secondary); padding: 2rem;">
+                    暂无评论，来发表第一条评论吧！
+                </p>
+            </div>
+        `;
+        return;
+    }
+
+    commentsList.innerHTML = comments.map((comment, commentIndex) => {
+        return renderComment(comment, commentIndex);
+    }).join('');
+}
+
+function renderComment(comment, commentIndex, isReply = false) {
+    const timeAgo = getTimeAgo(comment.timestamp);
+    const repliesHtml = comment.replies ? comment.replies.map((reply, replyIndex) =>
+        renderComment(reply, `${commentIndex}-${replyIndex}`, true)
+    ).join('') : '';
+
+    return `
+        <div class="comment-item ${isReply ? 'comment-reply' : ''}" data-comment-id="${commentIndex}">
+            <div class="comment-header">
+                <span class="comment-author">${comment.author || '匿名用户'}</span>
+                <span class="comment-time">${timeAgo}</span>
+            </div>
+            <div class="comment-content">${escapeHtml(comment.content)}</div>
+            <div class="comment-actions">
+                <button class="comment-action-btn ${comment.liked ? 'liked' : ''}" onclick="toggleLike(${commentIndex})">
+                    👍 ${comment.likes || 0}
+                </button>
+                ${!isReply ? `<button class="comment-action-btn" onclick="toggleReplyForm(${commentIndex})">💬 回复</button>` : ''}
+                <button class="comment-action-btn" onclick="deleteComment(${commentIndex})">🗑️ 删除</button>
+            </div>
+            ${!isReply ? `
+                <div class="reply-form" id="replyForm${commentIndex}">
+                    <textarea placeholder="写下你的回复..." class="comment-textarea" id="replyContent${commentIndex}"></textarea>
+                    <div class="comment-form-actions">
+                        <button onclick="submitReply(${commentIndex})" class="comment-submit-btn">💬 发表回复</button>
+                        <button onclick="toggleReplyForm(${commentIndex})" class="comment-action-btn">取消</button>
+                    </div>
+                </div>
+                ${repliesHtml ? `<div class="comment-replies">${repliesHtml}</div>` : ''}
+            ` : ''}
+        </div>
+    `;
+}
+
+function submitComment() {
+    const author = document.getElementById('commentAuthor').value.trim();
+    const email = document.getElementById('commentEmail').value.trim();
+    const content = document.getElementById('commentContent').value.trim();
+
+    if (!content) {
+        alert('请输入评论内容！');
+        return;
+    }
+
+    if (content.length > 500) {
+        alert('评论内容不能超过500字符！');
+        return;
+    }
+
+    const comment = {
+        id: Date.now(),
+        author: author || '匿名用户',
+        email: email,
+        content: content,
+        timestamp: new Date().toISOString(),
+        likes: 0,
+        liked: false,
+        replies: []
+    };
+
+    const comments = JSON.parse(localStorage.getItem(`blog-comments-${index}`) || '[]');
+    comments.push(comment);
+    localStorage.setItem(`blog-comments-${index}`, JSON.stringify(comments));
+
+    // 清空表单
+    document.getElementById('commentAuthor').value = '';
+    document.getElementById('commentEmail').value = '';
+    document.getElementById('commentContent').value = '';
+    document.getElementById('commentCharCount').textContent = '0/500';
+
+    // 重新加载评论
+    loadComments();
+
+    // 显示成功消息
+    showFloatingMessage('评论发表成功！', 'success');
+}
+
+function submitReply(commentIndex) {
+    const content = document.getElementById(`replyContent${commentIndex}`).value.trim();
+
+    if (!content) {
+        alert('请输入回复内容！');
+        return;
+    }
+
+    const reply = {
+        id: Date.now(),
+        author: '匿名用户',
+        content: content,
+        timestamp: new Date().toISOString(),
+        likes: 0,
+        liked: false
+    };
+
+    const comments = JSON.parse(localStorage.getItem(`blog-comments-${index}`) || '[]');
+    if (!comments[commentIndex].replies) {
+        comments[commentIndex].replies = [];
+    }
+    comments[commentIndex].replies.push(reply);
+    localStorage.setItem(`blog-comments-${index}`, JSON.stringify(comments));
+
+    // 隐藏回复表单
+    toggleReplyForm(commentIndex);
+
+    // 重新加载评论
+    loadComments();
+
+    showFloatingMessage('回复发表成功！', 'success');
+}
+
+function toggleLike(commentIndex) {
+    const comments = JSON.parse(localStorage.getItem(`blog-comments-${index}`) || '[]');
+    const comment = comments[commentIndex];
+
+    if (comment.liked) {
+        comment.likes = Math.max(0, (comment.likes || 0) - 1);
+        comment.liked = false;
+    } else {
+        comment.likes = (comment.likes || 0) + 1;
+        comment.liked = true;
+    }
+
+    localStorage.setItem(`blog-comments-${index}`, JSON.stringify(comments));
+    loadComments();
+}
+
+function toggleReplyForm(commentIndex) {
+    const replyForm = document.getElementById(`replyForm${commentIndex}`);
+    replyForm.classList.toggle('active');
+
+    if (replyForm.classList.contains('active')) {
+        document.getElementById(`replyContent${commentIndex}`).focus();
+    }
+}
+
+function deleteComment(commentIndex) {
+    if (confirm('确定要删除这条评论吗？')) {
+        const comments = JSON.parse(localStorage.getItem(`blog-comments-${index}`) || '[]');
+        comments.splice(commentIndex, 1);
+        localStorage.setItem(`blog-comments-${index}`, JSON.stringify(comments));
+        loadComments();
+        showFloatingMessage('评论已删除', 'info');
+    }
+}
+
+function getTimeAgo(timestamp) {
+    const now = new Date();
+    const time = new Date(timestamp);
+    const diffInSeconds = Math.floor((now - time) / 1000);
+
+    if (diffInSeconds < 60) return '刚刚';
+    if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}分钟前`;
+    if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}小时前`;
+    if (diffInSeconds < 2592000) return `${Math.floor(diffInSeconds / 86400)}天前`;
+
+    return time.toLocaleDateString();
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+function showFloatingMessage(message, type = 'info') {
+    const messageElement = document.createElement('div');
+    messageElement.textContent = message;
+    messageElement.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${type === 'success' ? 'var(--primary-cyan)' : type === 'error' ? 'var(--primary-magenta)' : 'var(--accent-purple)'};
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 8px;
+        z-index: 10000;
+        animation: slideInRight 0.3s ease-out;
+        font-weight: 500;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    `;
+
+    document.body.appendChild(messageElement);
+
+    setTimeout(() => {
+        messageElement.style.animation = 'slideOutRight 0.3s ease-in forwards';
+        setTimeout(() => messageElement.remove(), 300);
+    }, 3000);
+}
+
+// 评论字符计数
+document.addEventListener('DOMContentLoaded', function() {
+    const commentTextarea = document.getElementById('commentContent');
+    if (commentTextarea) {
+        commentTextarea.addEventListener('input', function() {
+            const charCount = this.value.length;
+            const charCountElement = document.getElementById('commentCharCount');
+            charCountElement.textContent = `${charCount}/500`;
+
+            if (charCount > 500) {
+                charCountElement.style.color = 'var(--primary-magenta)';
+            } else if (charCount > 400) {
+                charCountElement.style.color = 'orange';
+            } else {
+                charCountElement.style.color = 'var(--text-secondary)';
+            }
+        });
+    }
+
+    // 加载评论
+    loadComments();
+});
+</script>
+</body>
+</html>
