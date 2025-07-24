@@ -1090,16 +1090,26 @@ async function loadArticle() {
     try {
         let article = null;
 
-        // 尝试使用文章管理器加载
-        if (window.articleManager) {
-            await window.articleManager.init();
-            article = await window.articleManager.loadArticleByIndex(index);
+        console.log('开始加载文章，索引:', index);
+
+        // 首先尝试从localStorage加载（主要数据源）
+        const articles = JSON.parse(localStorage.getItem('blog-articles') || '[]');
+        console.log('localStorage中的文章数量:', articles.length);
+
+        if (index >= 0 && index < articles.length) {
+            article = articles[index];
+            console.log('从localStorage加载文章:', article ? article.title : '未找到');
         }
 
-        // 后备方案：使用localStorage
-        if (!article) {
-            const articles = JSON.parse(localStorage.getItem('blog-articles') || '[]');
-            article = articles[index];
+        // 如果localStorage没有，尝试使用文章管理器
+        if (!article && window.articleManager) {
+            try {
+                await window.articleManager.init();
+                article = await window.articleManager.loadArticleByIndex(index);
+                console.log('从文章管理器加载文章:', article ? article.title : '未找到');
+            } catch (error) {
+                console.warn('文章管理器加载失败:', error);
+            }
         }
 
         if (article) {
@@ -1142,13 +1152,30 @@ async function loadArticle() {
             loadComments();
 
         } else {
+            console.error('文章未找到，索引:', index);
+            console.log('调试信息 - 所有文章:', JSON.parse(localStorage.getItem('blog-articles') || '[]'));
+
             const notFoundTitle = typeof t === 'function' ? t('articleNotFound') : '文章未找到';
-            const notFoundDesc = typeof t === 'function' ? t('articleNotFoundDesc') : '抱歉，找不到这篇文章。可能已被删除或索引错误。';
+            const notFoundDesc = typeof t === 'function' ? t('articleNotFoundDesc') : `抱歉，找不到索引为 ${index} 的文章。可能已被删除或索引错误。`;
+
             document.getElementById('articleTitle').textContent = notFoundTitle;
-            document.getElementById('articleContent').innerHTML = `<p style="color: var(--text-secondary); text-align: center; padding: 2rem;">${notFoundDesc}</p>`;
-            document.getElementById('articleMeta').style.display = 'none';
-            document.getElementById('articleTags').style.display = 'none';
-            document.getElementById('relatedArticles').style.display = 'none';
+            document.getElementById('articleContent').innerHTML = `
+                <div style="color: var(--text-secondary); text-align: center; padding: 2rem;">
+                    <p>${notFoundDesc}</p>
+                    <p style="margin-top: 1rem;">
+                        <a href="index.html" style="color: var(--primary-cyan); text-decoration: none;">← 返回首页</a>
+                        <span style="margin: 0 1rem;">|</span>
+                        <a href="debug-articles.html" style="color: var(--primary-cyan); text-decoration: none;">🔧 调试工具</a>
+                    </p>
+                </div>
+            `;
+
+            // 隐藏其他元素
+            const elementsToHide = ['articleMeta', 'articleTags', 'relatedArticles'];
+            elementsToHide.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) element.style.display = 'none';
+            });
         }
     } catch (error) {
         console.error('加载文章失败:', error);

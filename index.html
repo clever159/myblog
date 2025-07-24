@@ -550,6 +550,7 @@ body::before {
             <option value="" data-lang="allCategories">全部分类</option>
         </select>
         <button onclick="toggleAdvancedSearch()" class="control-btn" id="advancedSearchBtn" data-tooltip="advancedSearchTooltip">🔧 高级</button>
+        <button onclick="window.open('debug-articles.html', '_blank')" class="control-btn" data-tooltip="debugTooltip" title="打开调试工具">🔧 调试</button>
         <select onchange="sortArticles(this.value)" class="sort-select" data-tooltip="sortTooltip">
             <option value="" data-lang="sortBy">排序方式...</option>
             <option value="date-new" data-lang="sortDateNew">📅 最新优先</option>
@@ -701,41 +702,42 @@ async function loadArticles() {
         const tagFilter = urlParams.get('tag');
         const categoryFilter = urlParams.get('category');
 
-        // 等待文章管理器初始化完成
-        if (window.articleManager) {
-            await window.articleManager.init();
-            const options = {
-                includeDrafts: false,
-                tag: tagFilter,
-                category: categoryFilter
-            };
-            const articles = window.articleManager.getArticlesList(options);
-            displayArticles(articles);
-        } else {
-            // 后备方案：使用localStorage
-            const articles = JSON.parse(localStorage.getItem('blog-articles') || '[]');
-            let filteredArticles = articles.filter(article => !article.isDraft);
+        console.log('开始加载文章列表...');
 
-            if (tagFilter) {
-                filteredArticles = filteredArticles.filter(article =>
-                    article.tags && article.tags.includes(tagFilter)
-                );
-            }
+        // 主要使用localStorage作为数据源
+        const articles = JSON.parse(localStorage.getItem('blog-articles') || '[]');
+        console.log('从localStorage加载了', articles.length, '篇文章');
 
-            if (categoryFilter) {
-                filteredArticles = filteredArticles.filter(article =>
-                    article.category === categoryFilter
-                );
-            }
+        let filteredArticles = articles.filter(article => !article.isDraft);
+        console.log('过滤后的已发布文章:', filteredArticles.length, '篇');
 
-            displayArticles(filteredArticles);
+        if (tagFilter) {
+            filteredArticles = filteredArticles.filter(article =>
+                article.tags && article.tags.includes(tagFilter)
+            );
+            console.log('按标签筛选后:', filteredArticles.length, '篇');
         }
+
+        if (categoryFilter) {
+            filteredArticles = filteredArticles.filter(article =>
+                article.category === categoryFilter
+            );
+            console.log('按分类筛选后:', filteredArticles.length, '篇');
+        }
+
+        displayArticles(filteredArticles);
+
     } catch (error) {
         console.error('加载文章失败:', error);
-        // 后备方案：使用localStorage
-        const articles = JSON.parse(localStorage.getItem('blog-articles') || '[]');
-        const filteredArticles = articles.filter(article => !article.isDraft);
-        displayArticles(filteredArticles);
+        // 显示错误信息
+        const articleList = document.getElementById('articleList');
+        articleList.innerHTML = `
+            <div style="text-align: center; color: var(--text-secondary); padding: 2rem;">
+                <h3>加载失败</h3>
+                <p>无法加载文章列表，请刷新页面重试。</p>
+                <p><a href="debug-articles.html" style="color: var(--primary-cyan);">🔧 打开调试工具</a></p>
+            </div>
+        `;
     }
 }
 
@@ -754,11 +756,29 @@ function displayArticles(articles) {
         return;
     }
     
-    articleList.innerHTML = articles.map((article, index) => {
-        const realIndex = JSON.parse(localStorage.getItem('blog-articles') || '[]').indexOf(article);
-        const wordCount = article.content.replace(/<[^>]*>/g, '').split(/\s+/).filter(word => word.length > 0).length;
-        const preview = article.content.replace(/<[^>]*>/g, '').substring(0, 150) + '...';
-        
+    // 获取所有文章用于索引计算
+    const allArticles = JSON.parse(localStorage.getItem('blog-articles') || '[]');
+
+    articleList.innerHTML = articles.map((article, displayIndex) => {
+        // 计算真实索引：在localStorage中的位置
+        let realIndex = allArticles.findIndex(a =>
+            a.title === article.title &&
+            a.createTime === article.createTime
+        );
+
+        // 如果没找到匹配，使用显示索引（这种情况不应该发生）
+        if (realIndex === -1) {
+            console.warn(`无法找到文章 "${article.title}" 的真实索引，使用显示索引 ${displayIndex}`);
+            realIndex = displayIndex;
+        }
+
+        // 确保文章有内容字段
+        const content = article.content || '';
+        const wordCount = content.replace(/<[^>]*>/g, '').split(/\s+/).filter(word => word.length > 0).length;
+        const preview = content.replace(/<[^>]*>/g, '').substring(0, 150) + (content.length > 150 ? '...' : '');
+
+        console.log(`文章 "${article.title}" 显示索引: ${displayIndex}, 真实索引: ${realIndex}`);
+
         return `
             <div class="article-card" onclick="window.location.href='article.html?index=${realIndex}'" title="点击查看完整文章">
                 <div class="article-card-title">${article.title}</div>

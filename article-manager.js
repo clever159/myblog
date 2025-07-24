@@ -96,8 +96,17 @@ class ArticleManager {
         if (index < 0 || index >= this.articles.length) {
             return null;
         }
-        
+
         const articleInfo = this.articles[index];
+
+        // 如果是从localStorage后备加载的，直接返回localStorage中的完整文章
+        if (articleInfo.id && articleInfo.id.startsWith('local-')) {
+            const articles = JSON.parse(localStorage.getItem('blog-articles') || '[]');
+            const localIndex = parseInt(articleInfo.id.replace('local-', ''));
+            return articles[localIndex] || null;
+        }
+
+        // 否则尝试从文件加载
         return await this.loadArticleById(articleInfo.id);
     }
 
