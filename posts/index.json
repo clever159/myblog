@@ -1,0 +1,39 @@
+{
+  "lastUpdated": "2024-01-20T10:00:00.000Z",
+  "totalArticles": 3,
+  "articles": [
+    {
+      "id": "welcome-to-cyber-blog",
+      "filename": "2024-01-20-welcome-to-cyber-blog.json",
+      "title": "欢迎来到赛博博客",
+      "createTime": "2024-01-20T10:00:00.000Z",
+      "lastModified": "2024-01-20T10:00:00.000Z",
+      "status": "published",
+      "tags": ["欢迎", "介绍", "赛博朋克"],
+      "category": "general",
+      "wordCount": 256
+    },
+    {
+      "id": "markdown-guide",
+      "filename": "2024-01-20-markdown-writing-guide.json",
+      "title": "Markdown 写作指南",
+      "createTime": "2024-01-20T11:00:00.000Z",
+      "lastModified": "2024-01-20T11:00:00.000Z",
+      "status": "published",
+      "tags": ["Markdown", "写作", "教程"],
+      "category": "tutorial",
+      "wordCount": 512
+    },
+    {
+      "id": "future-tech-trends",
+      "filename": "2024-01-20-future-technology-trends.json",
+      "title": "未来科技趋势展望",
+      "createTime": "2024-01-20T12:00:00.000Z",
+      "lastModified": "2024-01-20T12:00:00.000Z",
+      "status": "published",
+      "tags": ["科技", "未来", "AI", "区块链"],
+      "category": "technology",
+      "wordCount": 768
+    }
+  ]
+}

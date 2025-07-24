@@ -1,0 +1,13 @@
+{
+  "id": "markdown-guide",
+  "title": "Markdown 写作指南",
+  "content": "<h2>📝 Markdown 写作指南</h2><p>Markdown 是一种轻量级标记语言，让你可以使用易读易写的纯文本格式编写文档。</p><h3>🔤 基础语法</h3><h4>标题</h4><pre><code># 一级标题\n## 二级标题\n### 三级标题</code></pre><h4>文本格式</h4><ul><li><strong>粗体文本</strong>：<code>**粗体**</code></li><li><em>斜体文本</em>：<code>*斜体*</code></li><li><code>行内代码</code>：<code>`代码`</code></li></ul><h4>列表</h4><p>无序列表：</p><pre><code>- 项目1\n- 项目2\n- 项目3</code></pre><p>有序列表：</p><pre><code>1. 第一项\n2. 第二项\n3. 第三项</code></pre><h4>链接和图片</h4><ul><li>链接：<code>[链接文本](URL)</code></li><li>图片：<code>![替代文本](图片URL)</code></li></ul><h4>引用</h4><blockquote><p>这是一个引用块，使用 <code>&gt;</code> 符号创建。</p></blockquote><h4>代码块</h4><pre><code>```javascript\nfunction hello() {\n    console.log('Hello, World!');\n}\n```</code></pre><h3>💡 写作技巧</h3><ol><li><strong>保持简洁</strong>：使用简短的段落和清晰的结构</li><li><strong>善用标题</strong>：合理使用标题层级组织内容</li><li><strong>添加代码</strong>：技术文章中适当添加代码示例</li><li><strong>使用列表</strong>：重要信息用列表形式呈现</li></ol><p>掌握这些基础语法，你就可以开始愉快地使用 Markdown 写作了！</p>",
+  "author": "Cyber Blogger",
+  "createTime": "2024-01-20T11:00:00.000Z",
+  "lastModified": "2024-01-20T11:00:00.000Z",
+  "tags": ["Markdown", "写作", "教程"],
+  "category": "tutorial",
+  "status": "published",
+  "wordCount": 512,
+  "readTime": 3
+}
