@@ -155,15 +155,7 @@ site_state: true
 # Key is the link label showing to end users.
 # Value before `||` delimiter is the target permalink, value after `||` delimiter is the name of Font Awesome icon.
 social:
-  #GitHub: https://github.com/yourname || fab fa-github
-  #E-Mail: mailto:yourname@gmail.com || fa fa-envelope
-  #Weibo: https://weibo.com/yourname || fab fa-weibo
-  #Twitter: https://twitter.com/yourname || fab fa-twitter
-  #FB Page: https://www.facebook.com/yourname || fab fa-facebook
-  #StackOverflow: https://stackoverflow.com/yourname || fab fa-stack-overflow
-  #YouTube: https://youtube.com/yourname || fab fa-youtube
-  #Instagram: https://instagram.com/yourname || fab fa-instagram
-  #Skype: skype:yourname?call|chat || fab fa-skype
+  GitHub: https://github.com/Ruoshui599 || fab fa-github
 
 social_icons:
   enable: true
