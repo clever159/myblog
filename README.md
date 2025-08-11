@@ -61,25 +61,25 @@ categories: [技术]
 编辑 `blog/_config.yml`：
 - `title/author/language`：已设置中文
 - `theme: next`
-- `url: https://Ruoshui599.github.io`
+- `url: https://clever159.github.io`
 - 部署：
 ```yml
 deploy:
   type: git
-  repo: https://github.com/Ruoshui599/Ruoshui599.github.io.git
+  repo: https://github.com/clever159/clever159.github.io.git
   branch: main
 ```
 
 ## 主题配置（可选）
 编辑 `themes/next/_config.yml`：
 - 菜单：已启用 首页/分类/标签/归档/关于/站点地图
-- 社交：已加入 GitHub：`https://github.com/Ruoshui599`
+- 社交：已加入 GitHub：`https://github.com/clever159`
 - 本地搜索与懒加载：已启用
 
 ## 部署到 GitHub Pages（用户主页，推荐）
-发布到 `https://Ruoshui599.github.io` 根域，源码与页面分离：
+发布到 `https://clever159.github.io` 根域，源码与页面分离：
 - 源码仓库：`myblog`（示例名，可自定义）
-- Pages 仓库：`Ruoshui599/Ruoshui599.github.io`
+- Pages 仓库：`clever159/clever159.github.io`
 
 步骤：
 1) 生成与部署（需已登录 GitHub 或使用 PAT）
@@ -87,7 +87,7 @@ deploy:
 npm run clean && npm run build
 npm run deploy:pages
 ```
-2) 首次部署后等待 1-3 分钟，访问 `https://Ruoshui599.github.io`
+2) 首次部署后等待 1-3 分钟，访问 `https://clever159.github.io`
 
 ## 部署到 Vercel（静态托管）
 - 导入源码仓库
@@ -97,13 +97,13 @@ npm run deploy:pages
 
 ## 同时推送到两个仓库（源码 + Pages）
 假设：
-- 源码仓库：`https://github.com/Ruoshui599/myblog.git`
-- Pages 仓库：`https://github.com/Ruoshui599/Ruoshui599.github.io.git`
+- 源码仓库：`https://github.com/clever159/myblog.git`
+- Pages 仓库：`https://github.com/clever159/clever159.github.io.git`
 
 添加远程并推送源码：
 ```bash
 git branch -M main
-git remote add origin https://github.com/Ruoshui599/myblog.git
+git remote add origin https://github.com/clever159/myblog.git
 git push -u origin main
 ```
 
@@ -114,7 +114,7 @@ npm run deploy:pages
 ```
 
 > 若命令行提示需要登录，请先在本机 Git Credential Manager 登录 GitHub，或使用 PAT：
-> `https://<TOKEN>@github.com/Ruoshui599/Ruoshui599.github.io.git`
+> `https://<TOKEN>@github.com/clever159/clever159.github.io.git`
 
 ## 可自定义项
 - 站点信息：`_config.yml` 的 `title`、`subtitle`、`description`、`author`
